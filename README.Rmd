@@ -30,33 +30,35 @@ devtools::install_github("tjmahr/printy")
 
 ## Examples
 
-Formatting negative numbers with a minus sign.
-
-```{r example}
-library(dplyr, warn.conflicts = FALSE)
-library(printy)
-fmt_minus_sign(c(1, 2, -3, -0.4, -pi))
-```
-
 Print a number with n digits of precision. R numbers lose precision when 
 converted to strings. This function converts the numbers to strings and keeps
 precision. (It's a wrapper for `sprintf()`.)
 
-```{r}
+```{r fix-digits}
+library(dplyr, warn.conflicts = FALSE)
+library(printy)
 test_cor <- cor(mtcars[, 1:4]) 
 
+# Typical loss of trailing zeroes
 test_cor[1:4, 3] %>% round(2) %>% as.character()
+
 test_cor[1:4, 3] %>% fmt_fix_digits(2)
 ```
 
 Don't print a leading zero on numbers that are bounded between &minus;1 and 1,
 such as correlations or _p_-values.
 
-```{r}
+```{r leading-zero}
 fmt_leading_zero(c(-0.3, 0.4, 1))
 
 # Todo: This functions obliterates 0's
 fmt_leading_zero(c(0, 0.0))
+```
+
+Format negative numbers with a minus sign.
+
+```{r minus-sign}
+fmt_minus_sign(c(1, 2, -3, -0.4, -pi))
 ```
 
 Putting it all together.
@@ -69,8 +71,8 @@ fmt_correlation <- function(xs, digits = 2) {
 test_cor %>% 
   as.data.frame() %>% 
   tibble::as_tibble() %>% 
-  tibble::rownames_to_column() %>% 
-  mutate_at(vars(-rowname), fmt_correlation) %>% 
-  rename(` ` = rowname) %>% 
+  tibble::rownames_to_column(".rowname") %>% 
+  mutate_at(vars(-.rowname), fmt_correlation) %>% 
+  rename(` ` = .rowname) %>% 
   knitr::kable(align = "lrrrr")
 ```

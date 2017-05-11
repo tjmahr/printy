@@ -18,24 +18,17 @@ devtools::install_github("tjmahr/printy")
 Examples
 --------
 
-Formatting negative numbers with a minus sign.
+Print a number with n digits of precision. R numbers lose precision when converted to strings. This function converts the numbers to strings and keeps precision. (It's a wrapper for `sprintf()`.)
 
 ``` r
 library(dplyr, warn.conflicts = FALSE)
 library(printy)
-fmt_minus_sign(c(1, 2, -3, -0.4, -pi))
-#> [1] "1"                       "2"                      
-#> [3] "&minus;3"                "&minus;0.4"             
-#> [5] "&minus;3.14159265358979"
-```
-
-Print a number with n digits of precision. R numbers lose precision when converted to strings. This function converts the numbers to strings and keeps precision. (It's a wrapper for `sprintf()`.)
-
-``` r
 test_cor <- cor(mtcars[, 1:4]) 
 
+# Typical loss of trailing zeroes
 test_cor[1:4, 3] %>% round(2) %>% as.character()
 #> [1] "-0.85" "0.9"   "1"     "0.79"
+
 test_cor[1:4, 3] %>% fmt_fix_digits(2)
 #> [1] "-0.85" "0.90"  "1.00"  "0.79"
 ```
@@ -51,6 +44,15 @@ fmt_leading_zero(c(0, 0.0))
 #> [1] "" ""
 ```
 
+Format negative numbers with a minus sign.
+
+``` r
+fmt_minus_sign(c(1, 2, -3, -0.4, -pi))
+#> [1] "1"                       "2"                      
+#> [3] "&minus;3"                "&minus;0.4"             
+#> [5] "&minus;3.14159265358979"
+```
+
 Putting it all together.
 
 ``` r
@@ -61,9 +63,9 @@ fmt_correlation <- function(xs, digits = 2) {
 test_cor %>% 
   as.data.frame() %>% 
   tibble::as_tibble() %>% 
-  tibble::rownames_to_column() %>% 
-  mutate_at(vars(-rowname), fmt_correlation) %>% 
-  rename(` ` = rowname) %>% 
+  tibble::rownames_to_column(".rowname") %>% 
+  mutate_at(vars(-.rowname), fmt_correlation) %>% 
+  rename(` ` = .rowname) %>% 
   knitr::kable(align = "lrrrr")
 ```
 
