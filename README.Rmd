@@ -1,0 +1,76 @@
+---
+output: 
+  github_document: 
+    default
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "fig/README-"
+)
+```
+
+# printy
+
+Over the years, I've written a lot of one-off functions for formatting numbers
+in RMarkdown documents. This packages collects them in a single location.
+
+## Installation
+
+You can install printy from github with:
+
+```{r gh-installation, eval = FALSE}
+# install.packages("devtools")
+devtools::install_github("tjmahr/printy")
+```
+
+## Examples
+
+Formatting negative numbers with a minus sign.
+
+```{r example}
+library(dplyr, warn.conflicts = FALSE)
+library(printy)
+fmt_minus_sign(c(1, 2, -3, -0.4, -pi))
+```
+
+Print a number with n digits of precision. R numbers lose precision when 
+converted to strings. This function converts the numbers to strings and keeps
+precision. (It's a wrapper for `sprintf()`.)
+
+```{r}
+test_cor <- cor(mtcars[, 1:4]) 
+
+test_cor[1:4, 3] %>% round(2) %>% as.character()
+test_cor[1:4, 3] %>% fmt_fix_digits(2)
+```
+
+Don't print a leading zero on numbers that are bounded between &minus;1 and 1,
+such as correlations or _p_-values.
+
+```{r}
+fmt_leading_zero(c(-0.3, 0.4, 1))
+
+# Todo: This functions obliterates 0's
+fmt_leading_zero(c(0, 0.0))
+```
+
+Putting it all together.
+
+```{r}
+fmt_correlation <- function(xs, digits = 2) {
+  xs %>% fmt_fix_digits(digits) %>% fmt_leading_zero() %>% fmt_minus_sign()
+}
+
+test_cor %>% 
+  as.data.frame() %>% 
+  tibble::as_tibble() %>% 
+  tibble::rownames_to_column() %>% 
+  mutate_at(vars(-rowname), fmt_correlation) %>% 
+  rename(` ` = rowname) %>% 
+  knitr::kable(align = "lrrrr")
+```

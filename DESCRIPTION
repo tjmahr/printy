@@ -1,0 +1,14 @@
+Package: printy
+Title: Helper functions for pretty-printing numbers
+Version: 0.0.0.9000
+Authors@R: person("TJ", "Mahr", email = "tristan.mahr@gmail.com", role = c("aut", "cre"))
+Description: This package contains helper functions for formatting numbers.
+Depends: R (>= 3.4.0)
+License: GPL-3 + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Suggests: testthat
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 6.0.1
+Imports: magrittr,
+    stringr
