@@ -76,3 +76,41 @@ test_cor %>%
   rename(` ` = .rowname) %>% 
   knitr::kable(align = "lrrrr")
 ```
+
+
+## Formatting tables from lme4 models
+
+One thing I've had to do a lot is summarize mixed effects models fit with lme4.
+This package provides `pretty_lme4_ranefs()` which creates a dataframe random
+effect variances and covariances like those printed by `summary()`.
+
+For example, we can fit the model.
+
+```{r}
+library(lme4)
+model <- lmer(Reaction ~ Days + (Days | Subject), sleepstudy)
+summary(model)
+```
+
+`pretty_lme4_ranefs()` creates the following dataframe.
+
+```{r}
+pretty_lme4_ranefs(model)
+```
+
+Which in markdown renders as
+
+```{r}
+knitr::kable(pretty_lme4_ranefs(model), align = c("l", "l", "r", "r", "r"))
+```
+
+Here's a dumb model with a lot going on in the random effects.
+
+```{r, warning = FALSE}
+model <- lmer(mpg ~ wt * hp + (drat | gear) + (hp * cyl | am), mtcars)
+model
+
+knitr::kable(pretty_lme4_ranefs(model), 
+             align = c("l", "l", "r", "r", "r", "r", "r", "r", "r"))
+```
+

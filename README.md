@@ -75,3 +75,102 @@ test_cor %>%
 | cyl  |  −.85|  1.00|   .90|   .83|
 | disp |  −.85|   .90|  1.00|   .79|
 | hp   |  −.78|   .83|   .79|  1.00|
+
+Formatting tables from lme4 models
+----------------------------------
+
+One thing I've had to do a lot is summarize mixed effects models fit with lme4. This package provides `pretty_lme4_ranefs()` which creates a dataframe random effect variances and covariances like those printed by `summary()`.
+
+For example, we can fit the model.
+
+``` r
+library(lme4)
+#> Loading required package: Matrix
+model <- lmer(Reaction ~ Days + (Days | Subject), sleepstudy)
+summary(model)
+#> Linear mixed model fit by REML ['lmerMod']
+#> Formula: Reaction ~ Days + (Days | Subject)
+#>    Data: sleepstudy
+#> 
+#> REML criterion at convergence: 1743.6
+#> 
+#> Scaled residuals: 
+#>     Min      1Q  Median      3Q     Max 
+#> -3.9536 -0.4634  0.0231  0.4634  5.1793 
+#> 
+#> Random effects:
+#>  Groups   Name        Variance Std.Dev. Corr
+#>  Subject  (Intercept) 612.09   24.740       
+#>           Days         35.07    5.922   0.07
+#>  Residual             654.94   25.592       
+#> Number of obs: 180, groups:  Subject, 18
+#> 
+#> Fixed effects:
+#>             Estimate Std. Error t value
+#> (Intercept)  251.405      6.825   36.84
+#> Days          10.467      1.546    6.77
+#> 
+#> Correlation of Fixed Effects:
+#>      (Intr)
+#> Days -0.138
+```
+
+`pretty_lme4_ranefs()` creates the following dataframe.
+
+``` r
+pretty_lme4_ranefs(model)
+#>      Group   Parameter Variance    SD Correlations &nbsp;
+#> 1  Subject (Intercept)   612.09 24.74         1.00 &nbsp;
+#> 2   &nbsp;        Days    35.07  5.92          .07   1.00
+#> 3 Residual      &nbsp;   654.94 25.59       &nbsp; &nbsp;
+```
+
+Which in markdown renders as
+
+``` r
+knitr::kable(pretty_lme4_ranefs(model), align = c("l", "l", "r", "r", "r"))
+```
+
+| Group    | Parameter   |  Variance|     SD|  Correlations|      |
+|:---------|:------------|---------:|------:|-------------:|:-----|
+| Subject  | (Intercept) |    612.09|  24.74|          1.00|      |
+|          | Days        |     35.07|   5.92|           .07| 1.00 |
+| Residual |             |    654.94|  25.59|              |      |
+
+Here's a dumb model with a lot going on in the random effects.
+
+``` r
+model <- lmer(mpg ~ wt * hp + (drat | gear) + (hp * cyl | am), mtcars)
+model
+#> Linear mixed model fit by REML ['lmerMod']
+#> Formula: mpg ~ wt * hp + (drat | gear) + (hp * cyl | am)
+#>    Data: mtcars
+#> REML criterion at convergence: 153.7334
+#> Random effects:
+#>  Groups   Name        Std.Dev. Corr             
+#>  gear     (Intercept) 1.299605                  
+#>           drat        0.078629 1.00             
+#>  am       (Intercept) 2.062387                  
+#>           hp          0.024448 -1.00            
+#>           cyl         0.221126  0.06 -0.11      
+#>           hp:cyl      0.002108  0.93 -0.91 -0.31
+#>  Residual             2.089909                  
+#> Number of obs: 32, groups:  gear, 3; am, 2
+#> Fixed Effects:
+#> (Intercept)           wt           hp        wt:hp  
+#>     50.6295      -8.3801      -0.1306       0.0305  
+#> convergence code 1; 2 optimizer warnings; 0 lme4 warnings
+
+knitr::kable(pretty_lme4_ranefs(model), 
+             align = c("l", "l", "r", "r", "r", "r", "r", "r", "r"))
+```
+
+| Group    | Parameter   |  Variance|    SD|  Correlations|      |      |      |
+|:---------|:------------|---------:|-----:|-------------:|-----:|-----:|-----:|
+| am       | (Intercept) |      4.25|  2.06|          1.00|      |      |      |
+|          | hp          |      0.00|  0.02|         −1.00|  1.00|      |      |
+|          | cyl         |      0.05|  0.22|           .06|  −.11|  1.00|      |
+|          | hp:cyl      |      0.00|  0.00|           .93|  −.91|  −.31|  1.00|
+| gear     | (Intercept) |      1.69|  1.30|          1.00|      |      |      |
+|          | drat        |      0.01|  0.08|          1.00|  1.00|      |      |
+| Residual |             |      4.37|  2.09|              |      |      |      |
