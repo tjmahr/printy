@@ -43,3 +43,22 @@ fmt_fix_digits <- function(xs, n = 2) {
 fmt_replace_na <- function(xs, replacement = "") {
   ifelse(is.na(xs), replacement, xs)
 }
+
+
+#' @export
+fmt_p_value <- function(xs, digits = 3) {
+  stopifnot(digits >= 1, length(digits) == 1)
+
+  smallest_value <- 1 / (10 ^ digits)
+  smallest_form <-  smallest_value %>%
+    fmt_fix_digits(digits) %>%
+    fmt_leading_zero() %>%
+    paste0("< ", .)
+
+  xs_chr <- xs %>%
+    fmt_fix_digits(digits) %>%
+    fmt_leading_zero()
+
+  xs_chr[xs < smallest_value] <- smallest_form
+  xs_chr
+}
