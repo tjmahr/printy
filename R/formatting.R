@@ -38,3 +38,8 @@ fmt_fix_digits <- function(xs, n = 2) {
   printed[is.na(xs)] <- NA
   printed
 }
+
+#' @export
+fmt_replace_na <- function(xs, replacement = "") {
+  ifelse(is.na(xs), replacement, xs)
+}

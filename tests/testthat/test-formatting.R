@@ -17,3 +17,16 @@ test_that("fmt_minus_sign() removes sign from negative zero", {
   expect_equal(fmt_minus_sign(test), want)
 })
 
+test_that("fmt_replace_na() replaces NA values", {
+  expect_equal(fmt_replace_na(NA, "<missing>"), "<missing>")
+
+  # Defaults to empty strings
+  test <- c(-1:3, NA)
+  want <- c("-1", "0", "1", "2", "3", "")
+  expect_equal(fmt_replace_na(test), want)
+})
+
+test_that("fmt_replace_na() does not replace \"NA\"", {
+  expect_equal(fmt_replace_na(c("hey", "NA")), c("hey", "NA"))
+})
+
