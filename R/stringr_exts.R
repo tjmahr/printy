@@ -6,3 +6,21 @@ str_tokenize <- function(string) {
     strsplit(NULL) %>%
     unlist()
 }
+
+#' @export
+str_replace_same_as_previous <- function(string, replacement) {
+  string[is_same_as_last(string)] <- replacement
+  string
+}
+
+# Is x[n] the same as x[n-1]
+is_same_as_last <- function(xs) {
+  same_as_last <- xs == dplyr::lag(xs)
+
+  if (length(xs) > 0) {
+    # Overwrite NA (first lag) from lag(xs)
+    same_as_last[1] <- FALSE
+  }
+
+  same_as_last
+}
