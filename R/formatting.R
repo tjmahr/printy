@@ -62,3 +62,17 @@ fmt_p_value <- function(xs, digits = 3) {
   xs_chr[xs < smallest_value] <- smallest_form
   xs_chr
 }
+
+#' @export
+fmt_p_value_md <- function(ps) {
+  # use three digits if less than .6
+  ps <- ifelse(
+    ps < .06 | is.na(ps),
+    scales::pvalue(ps, accuracy = .001, add_p = TRUE),
+    scales::pvalue(ps, accuracy = .01, add_p = TRUE))
+
+  ps %>%
+    stringr::str_replace("(=|<)0[.]", "\\1.") %>%
+    stringr::str_replace("p(<|=)", "*p*&nbsp;\\1 ")
+}
+

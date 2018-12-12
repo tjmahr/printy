@@ -46,3 +46,14 @@ test_that("fmt_p_value() prints small values with less-thans, like \"< .001\"", 
   expect_equal(fmt_p_value(ps, 4), ps_4)
 })
 
+test_that("fmt_p_value_md() produces nice markdown results", {
+  ps <- c(1.42950220581308e-12, 4.86751586760195e-08, 1.07359248017686e-23,
+          0.0388882596082964, 0.00305963409612887, 0.00258434378890403,
+          .6)
+
+  p_md <- c("*p*&nbsp;< .001",  "*p*&nbsp;< .001",  "*p*&nbsp;< .001",
+            "*p*&nbsp;= .039",  "*p*&nbsp;= .003",  "*p*&nbsp;= .003",
+            "*p*&nbsp;= .60")
+
+  expect_equal(fmt_p_value_md(ps), p_md)
+})

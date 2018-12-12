@@ -77,6 +77,29 @@ test_cor %>%
   knitr::kable(align = "lrrrr")
 ```
 
+### *p*-values
+
+Format *p*-values with *n* digits of precision, with no leading zero, and with
+very small values being printed with a `<` sign.
+
+```{r}
+p <- c(1, 0.1, 0.01, 0.001, 0.0001)
+fmt_p_value(p, digits = 2)
+fmt_p_value(p, digits = 3)
+```
+
+Print *p*-values in markdown with nice defaults. 
+
+* Use 3 digits of precision for values less than .06
+* Otherwise, use 2 digits of precision.
+* Include *p* in markdown
+
+```{r}
+p <- c(1, 0.1, 0.06, 0.059, 0.051, 0.01, 0.001, 0.0001)
+fmt_p_value_md(p)
+```
+
+These render as: `r paste0(fmt_p_value_md(p), collapse = ", ")`.
 
 ## Formatting tables from lme4 models
 
