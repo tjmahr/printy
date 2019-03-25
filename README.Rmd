@@ -25,7 +25,7 @@ You can install printy from github with:
 
 ```{r gh-installation, eval = FALSE}
 # install.packages("devtools")
-devtools::install_github("tjmahr/printy")
+remotes::install_github("tjmahr/printy")
 ```
 
 ## Examples
@@ -70,8 +70,8 @@ fmt_correlation <- function(xs, digits = 2) {
 
 test_cor %>% 
   as.data.frame() %>% 
-  tibble::as_tibble() %>% 
   tibble::rownames_to_column(".rowname") %>% 
+  tibble::as_tibble() %>% 
   mutate_at(vars(-.rowname), fmt_correlation) %>% 
   rename(` ` = .rowname) %>% 
   knitr::kable(align = "lrrrr")

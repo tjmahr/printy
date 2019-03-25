@@ -53,7 +53,7 @@ fmt_p_value <- function(xs, digits = 3) {
   smallest_form <-  smallest_value %>%
     fmt_fix_digits(digits) %>%
     fmt_leading_zero() %>%
-    paste0("< ", .)
+    paste0_after(.first = "< ")
 
   xs_chr <- xs %>%
     fmt_fix_digits(digits) %>%
@@ -61,6 +61,10 @@ fmt_p_value <- function(xs, digits = 3) {
 
   xs_chr[xs < smallest_value] <- smallest_form
   xs_chr
+}
+
+paste0_after <- function(..., .first) {
+  paste0(.first, ...)
 }
 
 #' @export

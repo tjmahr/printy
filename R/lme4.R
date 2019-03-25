@@ -86,7 +86,7 @@ tidy_ranef_summary <- function(model) {
     dplyr::bind_rows() %>%
     dplyr::rename_(var1 = ~ var2)
 
-  sorting_names <- tail(names(cor_matrix), -2)
+  sorting_names <- utils::tail(names(cor_matrix), -2)
 
   dplyr::left_join(vars, cor_matrix, by = c("grp", "var1")) %>%
     dplyr::arrange_(.dots = list(c("grp", sorting_names)))
