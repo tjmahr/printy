@@ -110,6 +110,88 @@ fmt_p_value_md(p)
 These render as: *p* = 1.00, *p* = .10, *p* = .06, *p* = .059, *p* =
 .051, *p* = .010, *p* = .001, *p* \< .001.
 
+### Experimental
+
+`fmt_beta_md()` is an experimental function for getting model effects
+formatted in markdown. You give the function a model, an effect and a
+string listing the quantities you want.
+
+``` r
+model <- lm(breaks ~ wool * tension, warpbreaks) 
+summary(model)
+#> 
+#> Call:
+#> lm(formula = breaks ~ wool * tension, data = warpbreaks)
+#> 
+#> Residuals:
+#>      Min       1Q   Median       3Q      Max 
+#> -19.5556  -6.8889  -0.6667   7.1944  25.4444 
+#> 
+#> Coefficients:
+#>                Estimate Std. Error t value Pr(>|t|)    
+#> (Intercept)      44.556      3.647  12.218 2.43e-16 ***
+#> woolB           -16.333      5.157  -3.167 0.002677 ** 
+#> tensionM        -20.556      5.157  -3.986 0.000228 ***
+#> tensionH        -20.000      5.157  -3.878 0.000320 ***
+#> woolB:tensionM   21.111      7.294   2.895 0.005698 ** 
+#> woolB:tensionH   10.556      7.294   1.447 0.154327    
+#> ---
+#> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+#> 
+#> Residual standard error: 10.94 on 48 degrees of freedom
+#> Multiple R-squared:  0.3778, Adjusted R-squared:  0.3129 
+#> F-statistic: 5.828 on 5 and 48 DF,  p-value: 0.0002772
+```
+
+``` r
+# default to: b (beta), e (error), s (statistic), p (p value)
+fmt_beta_md(model, "woolB", "besp")
+#> [1] "*b*&nbsp;= &minus;16.33, SE&nbsp;= 5.16, *t*&nbsp;= &minus;3.17, *p*&nbsp;= .003"
+```
+
+*b* = −16.33, SE = 5.16, *t* = −3.17, *p* = .003
+
+``` r
+# Just a subset of them
+fmt_beta_md(model, "woolB", terms = "bp")
+#> [1] "*b*&nbsp;= &minus;16.33, *p*&nbsp;= .003"
+```
+
+*b* = −16.33, *p* = .003
+
+``` r
+# B for labeled b
+fmt_beta_md(model, "woolB", terms = "Bp", b_lab = "Wool B")
+#> [1] "*b*<sub>Wool B</sub>&nbsp;= &minus;16.33, *p*&nbsp;= .003"
+```
+
+*b*<sub>Wool B</sub> = −16.33, *p* = .003
+
+``` r
+# i for interval
+fmt_beta_md(model, "woolB", terms = "bi")
+#> [1] "*b*&nbsp;= &minus;16.33, 95% CI&nbsp;= [&minus;26.70, &minus;5.96]"
+```
+
+*b* = −16.33, 95% CI = \[−26.70, −5.96\]
+
+``` r
+# S for statistic with df
+fmt_beta_md(model, "woolB", terms = "bSp")
+#> [1] "*b*&nbsp;= &minus;16.33, *t*(48)&nbsp;= &minus;3.17, *p*&nbsp;= .003"
+```
+
+*b* = −16.33, *t*(48) = −3.17, *p* =
+.003
+
+``` r
+# extra digits (except for p-values; those go through `fmt_p_value_md()`)
+fmt_beta_md(model, "woolB", terms = "bep", digits = 6)
+#> [1] "*b*&nbsp;= &minus;16.333333, SE&nbsp;= 5.157299, *p*&nbsp;= .003"
+```
+
+*b* = −16.333333, SE = 5.157299, *p* = .003
+
 ## Formatting tables from lme4 models
 
 One thing I’ve had to do a lot is summarize mixed effects models fit
@@ -212,3 +294,4 @@ knitr::kable(pretty_lme4_ranefs(model),
 |          | hp:cyl      |     0.00 | 0.00 |          .95 | −.94 | −.99 | 1.00 |
 | gear     | (Intercept) |     2.42 | 1.56 |         1.00 |      |      |      |
 |          | drat        |     0.03 | 0.17 |        −1.00 | 1.00 |      |      |
+| Residual |             |     4.47 | 2.11 |              |      |      |      |

@@ -80,3 +80,125 @@ fmt_p_value_md <- function(ps) {
     stringr::str_replace("p(<|=)", "*p*&nbsp;\\1 ")
 }
 
+
+#' @export
+fmt_beta_md <- function(model, effect, terms = "besp", digits = 2, statistic = "t", b_lab = NULL, ci_width = .95) {
+  stopifnot(length(digits) %in% c(1, nchar(terms)))
+  stopifnot(inherits(model, "lm"))
+
+  # model <- lm(Sepal.Length ~ Species, iris)
+
+  if (length(digits) == 1) {
+    digits <- rep(digits, nchar(terms))
+  }
+
+  to_get <- unlist(stringr::str_split(terms, ""))
+  output <- to_get
+
+  b_lab <- ifelse(is.null(b_lab), effect, b_lab)
+
+  for (item_i in seq_along(to_get)) {
+    item <- to_get[item_i]
+
+    output[item_i] <- switch(
+      item,
+
+      B = mod_get_b(model, effect) %>%
+        fmt_fix_digits(digits[item_i]) %>%
+        fmt_minus_sign() %>%
+        prefix_equals("*b*", b_lab),
+
+      b = mod_get_b(model, effect) %>%
+        fmt_fix_digits(digits[item_i]) %>%
+        fmt_minus_sign() %>%
+        prefix_equals("*b*"),
+
+      e = mod_get_e(model, effect) %>%
+        fmt_fix_digits(digits[item_i]) %>%
+        prefix_equals("SE"),
+
+      i = mod_get_i(model, effect, ci_width = ci_width) %>%
+        fmt_fix_digits(digits[item_i]) %>%
+        fmt_minus_sign() %>%
+        fmt_ci() %>%
+        prefix_equals(
+          paste0(scales::percent(ci_width, accuracy = 1), " CI")
+        ),
+
+      s = mod_get_s(model, effect) %>%
+        fmt_fix_digits(digits[item_i]) %>%
+        fmt_minus_sign() %>%
+        prefix_equals(md_ital(statistic)),
+
+      S = mod_get_s(model, effect) %>%
+        fmt_fix_digits(digits[item_i]) %>%
+        fmt_minus_sign() %>%
+        prefix_equals(
+          paste0(md_ital(statistic), "(", mod_get_residual_df(model), ")")),
+
+      p = mod_get_p(model, effect) %>%
+        fmt_p_value_md(),
+
+      NA
+      )
+  }
+
+  paste0(output, collapse = ", ")
+
+}
+
+fmt_ci <- function(xs) {
+  stopifnot(length(xs) == 2)
+  paste0("[", xs[1], ", ", xs[2], "]")
+}
+
+prefix_equals <- function(x, main, sub = NULL) {
+  if (is.null(sub)) {
+    paste0(main, "&nbsp;= ", x)
+  } else {
+    paste0(main, "<sub>", sub, "</sub>", "&nbsp;= ", x)
+  }
+}
+
+md_ital <- function(x) paste0("*", x, "*")
+
+mod_get_b <- function(model, effect) {
+  summary <- broom::tidy(model)
+  stopifnot(effect %in% summary$term)
+  unlist(summary[summary$term == effect, "estimate"], use.names = FALSE)
+}
+
+mod_get_p <- function(model, effect) {
+  summary <- broom::tidy(model)
+  stopifnot(effect %in% summary$term)
+  unlist(summary[summary$term == effect, "p.value"], use.names = FALSE)
+}
+
+mod_get_e <- function(model, effect) {
+  summary <- broom::tidy(model)
+  stopifnot(effect %in% summary$term)
+  unlist(summary[summary$term == effect, "std.error"], use.names = FALSE)
+}
+
+mod_get_s <- function(model, effect) {
+  summary <- broom::tidy(model)
+  stopifnot(effect %in% summary$term)
+  unlist(summary[summary$term == effect, "statistic"], use.names = FALSE)
+}
+
+mod_get_residual_df <- function(model) {
+  summary <- broom::glance(model)
+  stopifnot("df.residual" %in% names(summary))
+  summary[["df.residual"]]
+}
+
+mod_get_i <- function(model, effect, ci_width) {
+  summary <- broom::tidy(model, conf.int = TRUE, conf.level = ci_width)
+  stopifnot(effect %in% summary$term)
+  unlist(
+    summary[summary$term == effect, c("conf.low", "conf.high")],
+    use.names = FALSE
+  )
+}
+
+

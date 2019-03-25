@@ -101,6 +101,62 @@ fmt_p_value_md(p)
 
 These render as: `r paste0(fmt_p_value_md(p), collapse = ", ")`.
 
+
+### Experimental
+
+`fmt_beta_md()` is an experimental function for getting model effects formatted
+in markdown. You give the function a model, an effect and a string listing the
+quantities you want.
+
+```{r}
+model <- lm(breaks ~ wool * tension, warpbreaks) 
+summary(model)
+```
+
+
+```{r}
+# default to: b (beta), e (error), s (statistic), p (p value)
+fmt_beta_md(model, "woolB", "besp")
+```
+
+`r fmt_beta_md(model, "woolB", "besp")`
+
+```{r}
+# Just a subset of them
+fmt_beta_md(model, "woolB", terms = "bp")
+```
+
+`r fmt_beta_md(model, "woolB", terms = "bp")`
+
+```{r}
+# B for labeled b
+fmt_beta_md(model, "woolB", terms = "Bp", b_lab = "Wool B")
+```
+
+`r  fmt_beta_md(model, "woolB", terms = "Bp", b_lab = "Wool B")`
+
+```{r bi}
+# i for interval
+fmt_beta_md(model, "woolB", terms = "bi")
+```
+
+`r fmt_beta_md(model, "woolB", terms = "bi")`
+
+```{r bSp}
+# S for statistic with df
+fmt_beta_md(model, "woolB", terms = "bSp")
+```
+
+`r fmt_beta_md(model, "woolB", terms = "bSp")`
+
+
+```{r}
+# extra digits (except for p-values; those go through `fmt_p_value_md()`)
+fmt_beta_md(model, "woolB", terms = "bep", digits = 6)
+```
+
+`r fmt_beta_md(model, "woolB", terms = "bep", digits = 6)`
+
 ## Formatting tables from lme4 models
 
 One thing I've had to do a lot is summarize mixed effects models fit with lme4.
