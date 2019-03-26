@@ -7,12 +7,12 @@ Over the years, I’ve written a lot of one-off functions for formatting
 numbers in RMarkdown documents. This packages collects them in a single
 location.
 
-## Installation
+## Installation 📚
 
 You can install printy from github with:
 
 ``` r
-# install.packages("devtools")
+# install.packages("remotes")
 remotes::install_github("tjmahr/printy")
 ```
 
@@ -81,7 +81,7 @@ test_cor %>%
 | disp | −.85 |  .90 | 1.00 |  .79 |
 | hp   | −.78 |  .83 |  .79 | 1.00 |
 
-### *p*-values
+### *p*-values 🎣
 
 `fmt_p_value()` formats *p*-values with *n* digits of precision, with no
 leading zero, and with very small values being printed with a `<` sign.
@@ -194,7 +194,39 @@ fmt_effect_md(model, "woolB", terms = "bep", digits = 6)
 
 *b* = −16.333333, SE = 5.157299, *p* = .003
 
-## Formatting tables from lme4 models
+## Skeletons 🦴
+
+I use `fmt_` for formatting functions. The other convention in the
+package is `skel_` to plug values into a formatting skeleton.
+
+`skel_conf_interval()` creates a confidence interval from two numbers.
+
+``` r
+skel_conf_interval(c(1, 2))
+#> [1] "[1, 2]"
+```
+
+`skel_conf_interval_v()` is the vectorized version. It is suitable for
+working on columns of numbers.
+
+``` r
+model <- lm(breaks ~ wool * tension, warpbreaks) 
+
+ci_starts <- confint(model)[, 1] %>% 
+  fmt_fix_digits(2) %>% 
+  fmt_minus_sign()
+
+ci_ends <- confint(model)[, 2] %>% 
+  fmt_fix_digits(2) %>% 
+  fmt_minus_sign()
+
+skel_conf_interval_v(ci_starts, ci_ends)
+#> [1] "[37.22, 51.89]"               "[&minus;26.70, &minus;5.96]" 
+#> [3] "[&minus;30.93, &minus;10.19]" "[&minus;30.37, &minus;9.63]" 
+#> [5] "[6.45, 35.78]"                "[&minus;4.11, 25.22]"
+```
+
+## Formatting tables from lme4 models 🖇
 
 One thing I’ve had to do a lot is summarize mixed effects models fit
 with lme4. This package provides `pretty_lme4_ranefs()` which creates a
@@ -301,35 +333,3 @@ knitr::kable(
 | gear     | (Intercept) |     2.42 | 1.56 |         1.00 |      |      |      |
 |          | drat        |     0.03 | 0.17 |        −1.00 | 1.00 |      |      |
 | Residual |             |     4.47 | 2.11 |              |      |      |      |
-
-## Skeletons 🦴
-
-I use `fmt_` for formatting functions. The other convention in the
-package is `skel_` to plug values into a formatting skeleton.
-
-`skel_conf_interval()` creates a confidence interval from two numbers.
-
-``` r
-skel_conf_interval(c(1, 2))
-#> [1] "[1, 2]"
-```
-
-`skel_conf_interval_v()` is the vectorized version. It is suitable for
-working on columns of numbers.
-
-``` r
-model <- lm(breaks ~ wool * tension, warpbreaks) 
-
-ci_starts <- confint(model)[, 1] %>% 
-  fmt_fix_digits(2) %>% 
-  fmt_minus_sign()
-
-ci_ends <- confint(model)[, 2] %>% 
-  fmt_fix_digits(2) %>% 
-  fmt_minus_sign()
-
-skel_conf_interval_v(ci_starts, ci_ends)
-#> [1] "[37.22, 51.89]"               "[&minus;26.70, &minus;5.96]" 
-#> [3] "[&minus;30.93, &minus;10.19]" "[&minus;30.37, &minus;9.63]" 
-#> [5] "[6.45, 35.78]"                "[&minus;4.11, 25.22]"
-```
