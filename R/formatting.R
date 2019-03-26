@@ -82,11 +82,11 @@ fmt_p_value_md <- function(ps) {
 
 
 #' @export
-fmt_beta_md <- function(model, effect, terms = "besp", digits = 2, statistic = "t", b_lab = NULL, ci_width = .95) {
+fmt_effect_md <- function(model, effect, terms = "besp", digits = 2,
+                          statistic = "t", b_lab = NULL, ci_width = .95) {
+
   stopifnot(length(digits) %in% c(1, nchar(terms)))
   stopifnot(inherits(model, "lm"))
-
-  # model <- lm(Sepal.Length ~ Species, iris)
 
   if (length(digits) == 1) {
     digits <- rep(digits, nchar(terms))
@@ -120,7 +120,7 @@ fmt_beta_md <- function(model, effect, terms = "besp", digits = 2, statistic = "
       i = mod_get_i(model, effect, ci_width = ci_width) %>%
         fmt_fix_digits(digits[item_i]) %>%
         fmt_minus_sign() %>%
-        fmt_ci() %>%
+        skel_conf_interval() %>%
         prefix_equals(
           paste0(scales::percent(ci_width, accuracy = 1), " CI")
         ),
@@ -147,10 +147,6 @@ fmt_beta_md <- function(model, effect, terms = "besp", digits = 2, statistic = "
 
 }
 
-fmt_ci <- function(xs) {
-  stopifnot(length(xs) == 2)
-  paste0("[", xs[1], ", ", xs[2], "]")
-}
 
 prefix_equals <- function(x, main, sub = NULL) {
   if (is.null(sub)) {

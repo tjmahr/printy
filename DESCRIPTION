@@ -1,6 +1,6 @@
 Package: printy
 Title: Helper functions for pretty-printing numbers
-Version: 0.0.0.9000
+Version: 0.0.0.9001
 Authors@R: person("TJ", "Mahr", email = "tristan.mahr@gmail.com", role = c("aut", "cre"))
 Description: This package contains helper functions for formatting numbers.
 Depends: R (>= 3.4.0)
@@ -19,4 +19,5 @@ Imports:
     stats,
     tibble,
     scales,
-    broom
+    broom,
+    glue

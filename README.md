@@ -16,11 +16,12 @@ You can install printy from github with:
 remotes::install_github("tjmahr/printy")
 ```
 
-## Examples
+## Formatters ✍
 
-Print a number with n digits of precision. R numbers lose precision when
-converted to strings. This function converts the numbers to strings and
-keeps precision. (It’s a wrapper for `sprintf()`.)
+`fmt_fix_digits()` prints a number with n digits of precision. R numbers
+lose precision when converted to strings. This function converts the
+numbers to strings and keeps precision. (It’s a wrapper for
+`sprintf()`.)
 
 ``` r
 library(dplyr, warn.conflicts = FALSE)
@@ -35,8 +36,8 @@ test_cor[1:4, 3] %>% fmt_fix_digits(2)
 #> [1] "-0.85" "0.90"  "1.00"  "0.79"
 ```
 
-Don’t print a leading zero on numbers that are bounded between −1 and 1,
-such as correlations or *p*-values.
+`fmt_leading_zero()` removes a leading zero on numbers that are bounded
+between −1 and 1, such as correlations or *p*-values.
 
 ``` r
 fmt_leading_zero(c(-0.3, 0.4, 1))
@@ -47,7 +48,7 @@ fmt_leading_zero(c(0, 0.0))
 #> [1] "" ""
 ```
 
-Format negative numbers with a minus sign.
+`fmt_minus_signs()` formats negative numbers with a minus sign.
 
 ``` r
 fmt_minus_sign(c(1, 2, -3, -0.4, -pi))
@@ -56,7 +57,8 @@ fmt_minus_sign(c(1, 2, -3, -0.4, -pi))
 #> [5] "&minus;3.14159265358979"
 ```
 
-Putting it all together.
+Putting it all together: Print a correlation matrix with 2 digits, no
+leading zero and with minus signs.
 
 ``` r
 fmt_correlation <- function(xs, digits = 2) {
@@ -81,8 +83,8 @@ test_cor %>%
 
 ### *p*-values
 
-Format *p*-values with *n* digits of precision, with no leading zero,
-and with very small values being printed with a `<` sign.
+`fmt_p_value()` formats *p*-values with *n* digits of precision, with no
+leading zero, and with very small values being printed with a `<` sign.
 
 ``` r
 p <- c(1, 0.1, 0.01, 0.001, 0.0001)
@@ -92,7 +94,7 @@ fmt_p_value(p, digits = 3)
 #> [1] "1.000"  ".100"   ".010"   ".001"   "< .001"
 ```
 
-Print *p*-values in markdown with nice defaults.
+`fmt_p_value_md()` formats *p*-values in markdown with nice defaults.
 
   - Use 3 digits of precision for values less than .06
   - Otherwise, use 2 digits of precision.
@@ -110,9 +112,9 @@ fmt_p_value_md(p)
 These render as: *p* = 1.00, *p* = .10, *p* = .06, *p* = .059, *p* =
 .051, *p* = .010, *p* = .001, *p* \< .001.
 
-### Experimental
+### Experimental formatters 🧪
 
-`fmt_beta_md()` is an experimental function for getting model effects
+`fmt_effect_md()` is an experimental function for getting model effects
 formatted in markdown. You give the function a model, an effect and a
 string listing the quantities you want.
 
@@ -145,7 +147,7 @@ summary(model)
 
 ``` r
 # default to: b (beta), e (error), s (statistic), p (p value)
-fmt_beta_md(model, "woolB", "besp")
+fmt_effect_md(model, "woolB", "besp")
 #> [1] "*b*&nbsp;= &minus;16.33, SE&nbsp;= 5.16, *t*&nbsp;= &minus;3.17, *p*&nbsp;= .003"
 ```
 
@@ -153,7 +155,7 @@ fmt_beta_md(model, "woolB", "besp")
 
 ``` r
 # Just a subset of them
-fmt_beta_md(model, "woolB", terms = "bp")
+fmt_effect_md(model, "woolB", terms = "bp")
 #> [1] "*b*&nbsp;= &minus;16.33, *p*&nbsp;= .003"
 ```
 
@@ -161,7 +163,7 @@ fmt_beta_md(model, "woolB", terms = "bp")
 
 ``` r
 # B for labeled b
-fmt_beta_md(model, "woolB", terms = "Bp", b_lab = "Wool B")
+fmt_effect_md(model, "woolB", terms = "Bp", b_lab = "Wool B")
 #> [1] "*b*<sub>Wool B</sub>&nbsp;= &minus;16.33, *p*&nbsp;= .003"
 ```
 
@@ -169,7 +171,7 @@ fmt_beta_md(model, "woolB", terms = "Bp", b_lab = "Wool B")
 
 ``` r
 # i for interval
-fmt_beta_md(model, "woolB", terms = "bi")
+fmt_effect_md(model, "woolB", terms = "bi")
 #> [1] "*b*&nbsp;= &minus;16.33, 95% CI&nbsp;= [&minus;26.70, &minus;5.96]"
 ```
 
@@ -177,7 +179,7 @@ fmt_beta_md(model, "woolB", terms = "bi")
 
 ``` r
 # S for statistic with df
-fmt_beta_md(model, "woolB", terms = "bSp")
+fmt_effect_md(model, "woolB", terms = "bSp")
 #> [1] "*b*&nbsp;= &minus;16.33, *t*(48)&nbsp;= &minus;3.17, *p*&nbsp;= .003"
 ```
 
@@ -186,7 +188,7 @@ fmt_beta_md(model, "woolB", terms = "bSp")
 
 ``` r
 # extra digits (except for p-values; those go through `fmt_p_value_md()`)
-fmt_beta_md(model, "woolB", terms = "bep", digits = 6)
+fmt_effect_md(model, "woolB", terms = "bep", digits = 6)
 #> [1] "*b*&nbsp;= &minus;16.333333, SE&nbsp;= 5.157299, *p*&nbsp;= .003"
 ```
 
@@ -244,11 +246,13 @@ pretty_lme4_ranefs(model)
 #> 3 Residual      &nbsp;   654.94 25.59       &nbsp; &nbsp;
 ```
 
-Which in markdown renders
-as
+Which in markdown renders as
 
 ``` r
-knitr::kable(pretty_lme4_ranefs(model), align = c("l", "l", "r", "r", "r"))
+knitr::kable(
+  pretty_lme4_ranefs(model), 
+  align = c("l", "l", "r", "r", "r")
+)
 ```
 
 | Group    | Parameter   | Variance |    SD | Correlations |      |
@@ -282,8 +286,10 @@ model
 #>    48.98745     -7.80904     -0.12118      0.02737  
 #> convergence code 0; 1 optimizer warnings; 0 lme4 warnings
 
-knitr::kable(pretty_lme4_ranefs(model), 
-             align = c("l", "l", "r", "r", "r", "r", "r", "r", "r"))
+knitr::kable(
+  pretty_lme4_ranefs(model), 
+  align = c("l", "l", "r", "r", "r", "r", "r", "r", "r")
+)
 ```
 
 | Group    | Parameter   | Variance |   SD | Correlations |      |      |      |
@@ -295,3 +301,35 @@ knitr::kable(pretty_lme4_ranefs(model),
 | gear     | (Intercept) |     2.42 | 1.56 |         1.00 |      |      |      |
 |          | drat        |     0.03 | 0.17 |        −1.00 | 1.00 |      |      |
 | Residual |             |     4.47 | 2.11 |              |      |      |      |
+
+## Skeletons 🦴
+
+I use `fmt_` for formatting functions. The other convention in the
+package is `skel_` to plug values into a formatting skeleton.
+
+`skel_conf_interval()` creates a confidence interval from two numbers.
+
+``` r
+skel_conf_interval(c(1, 2))
+#> [1] "[1, 2]"
+```
+
+`skel_conf_interval_v()` is the vectorized version. It is suitable for
+working on columns of numbers.
+
+``` r
+model <- lm(breaks ~ wool * tension, warpbreaks) 
+
+ci_starts <- confint(model)[, 1] %>% 
+  fmt_fix_digits(2) %>% 
+  fmt_minus_sign()
+
+ci_ends <- confint(model)[, 2] %>% 
+  fmt_fix_digits(2) %>% 
+  fmt_minus_sign()
+
+skel_conf_interval_v(ci_starts, ci_ends)
+#> [1] "[37.22, 51.89]"               "[&minus;26.70, &minus;5.96]" 
+#> [3] "[&minus;30.93, &minus;10.19]" "[&minus;30.37, &minus;9.63]" 
+#> [5] "[6.45, 35.78]"                "[&minus;4.11, 25.22]"
+```
