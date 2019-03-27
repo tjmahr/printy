@@ -114,7 +114,6 @@ model <- lm(breaks ~ wool * tension, warpbreaks)
 summary(model)
 ```
 
-
 ```{r}
 # default to: b (beta), e (error), s (statistic), p (p value)
 fmt_effect_md(model, "woolB", "besp")
@@ -150,7 +149,6 @@ fmt_effect_md(model, "woolB", terms = "bSp")
 
 `r fmt_effect_md(model, "woolB", terms = "bSp")`
 
-
 ```{r}
 # extra digits (except for p-values; those go through `fmt_p_value_md()`)
 fmt_effect_md(model, "woolB", terms = "bep", digits = 6)
@@ -158,23 +156,27 @@ fmt_effect_md(model, "woolB", terms = "bep", digits = 6)
 
 `r fmt_effect_md(model, "woolB", terms = "bep", digits = 6)`
 
+These are the currently supported models:
 
-## Skeletons 🦴
+  - `lm()`
+  - `lme4::lmer()` with Wald confidence intervals and Kenwood--Roger
+    approximation for the degrees of freedom and *p*-values.
+
+
+Skeletons 🦴
+-----------------------------------------------------------------------
 
 I use `fmt_` for formatting functions. The other convention in the package is
 `skel_` to plug values into a formatting skeleton. 
 
 `skel_conf_interval()` creates a confidence interval from two numbers.
 
-
 ```{r}
 skel_conf_interval(c(1, 2))
 ```
 
-
 `skel_conf_interval_v()` is the vectorized version. It is suitable for working
 on columns of numbers.
-
 
 ```{r}
 model <- lm(breaks ~ wool * tension, warpbreaks) 
@@ -189,6 +191,15 @@ ci_ends <- confint(model)[, 2] %>%
 
 skel_conf_interval_v(ci_starts, ci_ends)
 ```
+
+`skel_stat_n_value()` creates *t*-test-like or correlation-like statistic from a
+vector of two numbers.
+
+```{r}
+skel_stat_n_value(c("20", "2.0"))
+skel_stat_n_value(c("39", ".98"), stat = "*r*")
+```
+
 
 ## Formatting tables from lme4 models 🖇
 

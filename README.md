@@ -194,6 +194,12 @@ fmt_effect_md(model, "woolB", terms = "bep", digits = 6)
 
 *b* = −16.333333, SE = 5.157299, *p* = .003
 
+These are the currently supported models:
+
+  - `lm()`
+  - `lme4::lmer()` with Wald confidence intervals and Kenwood–Roger
+    approximation for the degrees of freedom and *p*-values.
+
 ## Skeletons 🦴
 
 I use `fmt_` for formatting functions. The other convention in the
@@ -224,6 +230,16 @@ skel_conf_interval_v(ci_starts, ci_ends)
 #> [1] "[37.22, 51.89]"               "[&minus;26.70, &minus;5.96]" 
 #> [3] "[&minus;30.93, &minus;10.19]" "[&minus;30.37, &minus;9.63]" 
 #> [5] "[6.45, 35.78]"                "[&minus;4.11, 25.22]"
+```
+
+`skel_stat_n_value()` creates *t*-test-like or correlation-like
+statistic from a vector of two numbers.
+
+``` r
+skel_stat_n_value(c("20", "2.0"))
+#> [1] "t(20)&nbsp;= 2.0"
+skel_stat_n_value(c("39", ".98"), stat = "*r*")
+#> [1] "*r*(39)&nbsp;= .98"
 ```
 
 ## Formatting tables from lme4 models 🖇

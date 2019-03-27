@@ -1,5 +1,5 @@
 
-#' Plug values into a confidence interval
+#' Skeleton for a confidence interval
 #'
 #' `skel_conf_interval_v()` is the vectorized function. Use it to make multiple
 #' intervals from, say, data-frame columns. `skel_conf_interval()` is the
@@ -30,6 +30,26 @@ skel_conf_interval_v <- function(xs, ys, skeleton = "[{xs}, {ys}]") {
 #' @rdname skel_conf_interval
 #' @export
 skel_conf_interval <- function(x, skeleton = "[{x[1]}, {x[2]}]") {
+  stopifnot(length(x) == 2)
+  as.character(glue::glue(skeleton))
+}
+
+
+#' Skeleton for t-statistic-like functions
+#'
+#' This skeleton handles formats like t-statistics (`t(df) = value`) or
+#' correlations (`r(n) = value`).
+#'
+#' @param x a two-element vector where the first number is the argument to the
+#'   statistical function and the second is its value.
+#' @param stat symbol for the statistic. defaults to `"t"`.
+#' @param skeleton  glue-style format to fill. defaults to
+#'   `"{stat}({x[1]})&nbsp;= {x[2]}"`.
+#' @return the formatted string
+#' @rdname skel_stat_n_value
+#' @export
+skel_stat_n_value <- function(x, stat = "t",
+                              skeleton = "{stat}({x[1]})&nbsp;= {x[2]}") {
   stopifnot(length(x) == 2)
   as.character(glue::glue(skeleton))
 }
