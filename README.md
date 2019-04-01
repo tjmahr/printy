@@ -45,7 +45,7 @@ fmt_leading_zero(c(-0.3, 0.4, 1))
 
 # Todo: This functions obliterates 0's
 fmt_leading_zero(c(0, 0.0))
-#> [1] "" ""
+#> [1] ".0" ".0"
 ```
 
 `fmt_minus_signs()` formats negative numbers with a minus sign.

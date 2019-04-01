@@ -1,5 +1,17 @@
 
+#' Format negative numbers with a minus sign
+#'
+#' @param xs a vector of numbers or a character vector representing numbers
+#' @return the vector with leading hyphens replaced with HTML minus signs
+#'   (`&minus;`).
 #' @export
+#' @details Negative zero `-0`, which might happen from aggressive rounding,
+#'   does not get a minus sign.
+#' @examples
+#' fmt_minus_sign(c(1, .2, -1, -.2))
+#'
+#' # Don't allow zero to be signed
+#' fmt_minus_sign(c(-0, round(-0.001)))
 fmt_minus_sign <- function(xs) {
   xs %>%
     stringr::str_replace("^-", "&minus;") %>%
@@ -9,8 +21,22 @@ fmt_minus_sign <- function(xs) {
 }
 
 
-# Don't print leading zero on bounded numbers.
+#' Format numbers to remove leading zeros
+#'
+#' @param xs a vector of numbers or a character vector representing numbers
+#' @return the vector with leading zeros removed. This function returns a
+#'   warning if any of the values have an absolute value greater than 1.
 #' @export
+#' @details APA format says that values that are bounded between [-1, 1] should
+#'   not be formatted with a leading zero. Common examples would be
+#'   correlations, proportions, probabilities and p-values. Why print the digit
+#'   if it's almost never used?
+#'
+#'   Zeros are printed to match the precision of the most precise number. For
+#'   example, `c(0, 0.111)` becomes `c(.000, .111)`
+#' @examples
+#' fmt_leading_zero(c(0, 0.111))
+#' fmt_leading_zero(c(0.99, -0.9, -0.0))
 fmt_leading_zero <- function(xs) {
   digit_matters <- xs %>%
     as.numeric() %>%
@@ -23,7 +49,16 @@ fmt_leading_zero <- function(xs) {
     warning("Non-zero leading digit")
   }
 
-  stringr::str_replace(xs, "^(-?)0", "\\1")
+  replaced <- stringr::str_replace(xs, "^(-?)0", "\\1")
+
+  if (any(as.numeric(xs) == 0, na.rm = TRUE)) {
+    # Match the most precise number (or use .0)
+    precision <- max(c(stringr::str_count(replaced, "\\d"), 1))
+    new_zero <- paste0(".", paste0(rep(0, precision), collapse = ""))
+    replaced[xs == 0] <- new_zero
+  }
+
+  replaced
 }
 
 is_greater_than_1 <- function(xs) {

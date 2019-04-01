@@ -11,8 +11,10 @@ pretty_lme4_ranefs <- function(model) {
   table <- table %>%
     # Format the numbers
     dplyr::mutate_at(c("vcov", "sdcor"), funs(format_fixef_num)) %>%
-    dplyr::mutate_at(vars(dplyr::one_of(ranef_names)),
-                     funs(format_ranef_cor)) %>%
+    dplyr::mutate_at(
+      vars(dplyr::one_of(ranef_names)),
+      funs(format_ranef_cor)
+    ) %>%
     sort_ranef_grps() %>%
     # Format variable names and group names
     dplyr::mutate_(

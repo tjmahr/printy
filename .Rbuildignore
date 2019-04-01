@@ -1,5 +1,6 @@
-^.*\.Rproj$
+^printy\.Rproj$
 ^\.Rproj\.user$
+^.*\.Rproj$
 ^README\.Rmd$
 ^README-.*\.png$
 ^fig/README-.*\.png$
