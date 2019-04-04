@@ -50,12 +50,9 @@ test_cor[1:4, 3] %>% fmt_fix_digits(2)
 
 ```{r leading-zero}
 fmt_leading_zero(c(-0.3, 0.4, 1))
-
-# Todo: This functions obliterates 0's
-fmt_leading_zero(c(0, 0.0))
 ```
 
-`fmt_minus_signs()` formats negative numbers with a minus sign.
+`fmt_minus_sign()` formats negative numbers with a minus sign.
 
 ```{r minus-sign}
 fmt_minus_sign(c(1, 2, -3, -0.4, -pi))

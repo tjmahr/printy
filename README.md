@@ -42,13 +42,9 @@ between −1 and 1, such as correlations or *p*-values.
 ``` r
 fmt_leading_zero(c(-0.3, 0.4, 1))
 #> [1] "-.3" ".4"  "1"
-
-# Todo: This functions obliterates 0's
-fmt_leading_zero(c(0, 0.0))
-#> [1] ".0" ".0"
 ```
 
-`fmt_minus_signs()` formats negative numbers with a minus sign.
+`fmt_minus_sign()` formats negative numbers with a minus sign.
 
 ``` r
 fmt_minus_sign(c(1, 2, -3, -0.4, -pi))

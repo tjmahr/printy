@@ -17,8 +17,8 @@ warning if any of the values have an absolute value greater than 1.
 Format numbers to remove leading zeros
 }
 \details{
-APA format says that values that are bounded between \link{-1, 1} should
-not be formatted with a leading zero. Common examples would be
+APA format says that values that are bounded between [-1, 1]
+should not be formatted with a leading zero. Common examples would be
 correlations, proportions, probabilities and p-values. Why print the digit
 if it's almost never used?
 

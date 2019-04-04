@@ -27,8 +27,8 @@ fmt_minus_sign <- function(xs) {
 #' @return the vector with leading zeros removed. This function returns a
 #'   warning if any of the values have an absolute value greater than 1.
 #' @export
-#' @details APA format says that values that are bounded between [-1, 1] should
-#'   not be formatted with a leading zero. Common examples would be
+#' @details APA format says that values that are bounded between \[-1, 1\]
+#'   should not be formatted with a leading zero. Common examples would be
 #'   correlations, proportions, probabilities and p-values. Why print the digit
 #'   if it's almost never used?
 #'

@@ -1,5 +1,52 @@
 
+#' Format an effect from a model object in markdown
+#'
+#' @param model a model object
+#' @param effect string naming an effect from a model
+#' @param terms a string representing the terms about the effect to extract and
+#'   format and the order to print the terms. See details below. Defaults to
+#'   `"besp"` for parameter estimate, standard error, statistic, *p*-value.
+#' @param digits a vector of digits to use for non-*p*-value terms. Defaults to
+#'   2 for 2 decimal places of precision for all terms. This argument can be a
+#'   vector to set the digits for each term, but in this case, the digits is
+#'   still ignored for *p*-values.
+#' @param statistic symbol to use for statistic. Defaults to *t*.
+#' @param b_lab label to print in subscripts after *b* for when `"B"` is one of
+#'   the terms.
+#' @param ci_width width to use for confidence intervals when the term `"i"` is
+#'   used.
 #' @export
+#'
+#' @details Currently only effects fit by [stats::lm()] and [lme4::lmer()].
+#'
+#' The supported terms are:
+#'
+#' * `"b"` - parameter estimate (think b for _beta_)
+#' * `"B"` - parameter estimate with a subscript label provided by `b_lab`
+#' * `"e"` - standard error
+#' * `"s"` - statistic. The symbol for the statistic is set by
+#'   `statistic`. The default value is `"t"` for a *t*-statistic. Example
+#'   output: _t_ = 1.
+#' * `"S"` - statistic as in `"s"` but with degrees of freedom. Example
+#'   output: _t_(12) = 1.
+#' * `"i"` - confidence interval. Width is set by `ci_width`.
+#' * `"p"` - _p_-value. The p-value is formatted by [fmt_p_value_md()].
+#'
+#' Degrees of freedom and *p*-values for `lmer()`` models use the
+#' Kenwood-Rogers approximation provided by [sjstats::p_value()]. This
+#' computation can take a while. The confidence-interval calculation uses
+#' default confidence interval calculation method used by
+#' [broom.mixed::tidy.merMod()].
+#'
+#' @examples
+#' model <- lm(breaks ~ wool * tension, warpbreaks)
+#'
+#' # default to: b (beta), e (error), s (statistic), p (p value)
+#' fmt_effect_md(model, "woolB", "besp")
+#'
+#' fmt_effect_md(model, "woolB", "Besp", b_lab = "WoolB")
+#'
+#' fmt_effect_md(model, "woolB", "i")
 fmt_effect_md <- function(model, effect, terms = "besp", digits = 2,
                           statistic = "t", b_lab = NULL, ci_width = .95) {
 
