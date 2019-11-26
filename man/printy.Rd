@@ -3,7 +3,6 @@
 \docType{package}
 \name{printy}
 \alias{printy}
-\alias{printy-package}
 \title{printy.}
 \description{
 printy.

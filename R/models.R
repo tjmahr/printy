@@ -33,7 +33,7 @@
 #' * `"p"` - _p_-value. The p-value is formatted by [fmt_p_value_md()].
 #'
 #' Degrees of freedom and *p*-values for `lmer()`` models use the
-#' Kenwood-Rogers approximation provided by [sjstats::p_value()]. This
+#' Kenwood-Rogers approximation provided by [parameters::p_value_kenward()]. This
 #' computation can take a while. The confidence-interval calculation uses
 #' default confidence interval calculation method used by
 #' [broom.mixed::tidy.merMod()].
@@ -175,14 +175,15 @@ get_terms.lmerMod <- function(model, effect, terms, ci_width = .95) {
   # Use Kenwood Rogers approximation
   use_kr <- any(c("S", "p") %in% to_get)
   if (use_kr) {
-    kr_test <- suppressMessages(sjstats::p_value(model, p.kr = TRUE))
 
-    kr_df <- attr(kr_test, "df.kr", exact = TRUE)
-    kr_stat <- attr(kr_test, "t.kr", exact = TRUE)
+    kr_test <- parameters::p_value_kenward(model) %>%
+      as.data.frame() %>%
+      dplyr::rename(term = .data$Parameter, p.value = .data$p)
 
-    kr_test <- as.data.frame(kr_test)
-    kr_test[["df"]] <- kr_df
-    kr_test[["statistic"]] <- kr_stat
+    kr_test[["df"]] <- parameters::dof_kenward(model)
+    kr_test[["std.error"]] <- parameters::se_kenward(model)
+
+    kr_test[["statistic"]] <- lme4::fixef(model) / kr_test[["std.error"]]
 
     summary[["std.error"]] <- NULL
     summary[["statistic"]] <- NULL

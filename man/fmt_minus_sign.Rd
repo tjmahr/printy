@@ -11,7 +11,7 @@ fmt_minus_sign(xs)
 }
 \value{
 the vector with leading hyphens replaced with HTML minus signs
-(\code{&minus;}).
+(\verb{&minus;}).
 }
 \description{
 Format negative numbers with a minus sign

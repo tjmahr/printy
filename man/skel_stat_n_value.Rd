@@ -4,8 +4,7 @@
 \alias{skel_stat_n_value}
 \title{Skeleton for t-statistic-like functions}
 \usage{
-skel_stat_n_value(x, stat = "t",
-  skeleton = "{stat}({x[1]})&nbsp;= {x[2]}")
+skel_stat_n_value(x, stat = "t", skeleton = "{stat}({x[1]})&nbsp;= {x[2]}")
 }
 \arguments{
 \item{x}{a two-element vector where the first number is the argument to the

@@ -11,7 +11,7 @@ Suggests:
     testthat,
     pbkrtest
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.0
 Imports: 
     magrittr,
     stringr,
@@ -24,5 +24,5 @@ Imports:
     broom,
     glue,
     broom.mixed,
-    sjstats,
-    rlang
+    rlang,
+    parameters

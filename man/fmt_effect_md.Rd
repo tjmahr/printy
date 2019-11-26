@@ -4,8 +4,15 @@
 \alias{fmt_effect_md}
 \title{Format an effect from a model object in markdown}
 \usage{
-fmt_effect_md(model, effect, terms = "besp", digits = 2,
-  statistic = "t", b_lab = NULL, ci_width = 0.95)
+fmt_effect_md(
+  model,
+  effect,
+  terms = "besp",
+  digits = 2,
+  statistic = "t",
+  b_lab = NULL,
+  ci_width = 0.95
+)
 }
 \arguments{
 \item{model}{a model object}
@@ -50,7 +57,7 @@ output: \emph{t}(12) = 1.
 }
 
 Degrees of freedom and \emph{p}-values for `lmer()`` models use the
-Kenwood-Rogers approximation provided by \code{\link[sjstats:p_value]{sjstats::p_value()}}. This
+Kenwood-Rogers approximation provided by \code{\link[parameters:p_value_kenward]{parameters::p_value_kenward()}}. This
 computation can take a while. The confidence-interval calculation uses
 default confidence interval calculation method used by
 \code{\link[broom.mixed:tidy.merMod]{broom.mixed::tidy.merMod()}}.
