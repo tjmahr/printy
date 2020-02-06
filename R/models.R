@@ -181,7 +181,7 @@ get_terms.lmerMod <- function(model, effect, terms, ci_width = .95) {
       dplyr::rename(term = .data$Parameter, p.value = .data$p)
 
     kr_test[["df"]] <- parameters::dof_kenward(model)
-    kr_test[["std.error"]] <- parameters::se_kenward(model)
+    kr_test[["std.error"]] <- parameters::se_kenward(model)[["SE"]]
 
     kr_test[["statistic"]] <- lme4::fixef(model) / kr_test[["std.error"]]
 
