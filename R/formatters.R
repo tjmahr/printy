@@ -104,17 +104,38 @@ paste0_after <- function(..., .first) {
   paste0(.first, ...)
 }
 
+#' Format a *p*-value in markdown
+#'
+#' Values less than .06 are formatted with 3 digits. Values equal to .06 or
+#' greater are formatted with 2 digits.
+#'
+#' [scales::label_pvalue()] does the initial rounding and formatting. Then this
+#' function strips off the leading 0 of the *p* value.
+#'
+#' @param ps *p*-values to format
+#' @return a character vector of markdown formatted *p*-values
+#'
+#' @examples
+#' fmt_p_value_md(0.0912)
+#' fmt_p_value_md(0.0512)
+#' fmt_p_value_md(0.005)
+#'
+#' # "p less than" notation kicks in below .001.
+#' fmt_p_value_md(0.0005)
 #' @export
 fmt_p_value_md <- function(ps) {
+  prefixes <- c("*p*&nbsp;< ", "*p*&nbsp;= ", "*p*&nbsp;> ")
+  label_pvalue_2 <- scales::label_pvalue(accuracy = .01 , prefix = prefixes)
+  label_pvalue_3 <- scales::label_pvalue(accuracy = .001, prefix = prefixes)
+
   # use three digits if less than .06
   ps <- ifelse(
     ps < .06 | is.na(ps),
-    scales::pvalue(ps, accuracy = .001, add_p = TRUE),
-    scales::pvalue(ps, accuracy = .01,  add_p = TRUE)
+    label_pvalue_3(ps),
+    label_pvalue_2(ps)
   )
 
   ps %>%
-    stringr::str_replace("(=|<)0[.]", "\\1.") %>%
-    stringr::str_replace("p(<|=)", "*p*&nbsp;\\1 ")
+    stringr::str_replace("(=|<|>) 0[.]", "\\1 .")
 }
 

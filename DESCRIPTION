@@ -11,7 +11,7 @@ Suggests:
     testthat,
     pbkrtest
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.0.0
+RoxygenNote: 7.1.0
 Imports: 
     magrittr,
     stringr,
@@ -20,7 +20,7 @@ Imports:
     tidyr,
     stats,
     tibble,
-    scales,
+    scales (>= 1.1.0),
     broom,
     glue,
     broom.mixed,

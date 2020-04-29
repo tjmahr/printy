@@ -4,6 +4,3 @@
 \name{printy}
 \alias{printy}
 \title{printy.}
-\description{
-printy.
-}

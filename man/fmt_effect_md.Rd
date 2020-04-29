@@ -56,11 +56,11 @@ output: \emph{t}(12) = 1.
 \item \code{"p"} - \emph{p}-value. The p-value is formatted by \code{\link[=fmt_p_value_md]{fmt_p_value_md()}}.
 }
 
-Degrees of freedom and \emph{p}-values for `lmer()`` models use the
-Kenwood-Rogers approximation provided by \code{\link[parameters:p_value_kenward]{parameters::p_value_kenward()}}. This
-computation can take a while. The confidence-interval calculation uses
+Degrees of freedom and \emph{p}-values for \code{lmer()} models use the
+Kenwood-Rogers approximation provided by \code{\link[parameters:p_value_kenward]{parameters::p_value_kenward()}}.
+This computation can take a while. The confidence-interval calculation uses
 default confidence interval calculation method used by
-\code{\link[broom.mixed:tidy.merMod]{broom.mixed::tidy.merMod()}}.
+\code{\link[broom:lme4_tidiers]{broom.mixed::tidy.merMod()}}.
 }
 \examples{
 model <- lm(breaks ~ wool * tension, warpbreaks)

@@ -32,11 +32,11 @@
 #' * `"i"` - confidence interval. Width is set by `ci_width`.
 #' * `"p"` - _p_-value. The p-value is formatted by [fmt_p_value_md()].
 #'
-#' Degrees of freedom and *p*-values for `lmer()`` models use the
-#' Kenwood-Rogers approximation provided by [parameters::p_value_kenward()]. This
-#' computation can take a while. The confidence-interval calculation uses
+#' Degrees of freedom and *p*-values for `lmer()` models use the
+#' Kenwood-Rogers approximation provided by [parameters::p_value_kenward()].
+#' This computation can take a while. The confidence-interval calculation uses
 #' default confidence interval calculation method used by
-#' [broom.mixed::tidy.merMod()].
+#' [`broom.mixed::tidy.merMod()`][broom::lme4_tidiers].
 #'
 #' @examples
 #' model <- lm(breaks ~ wool * tension, warpbreaks)
@@ -47,9 +47,15 @@
 #' fmt_effect_md(model, "woolB", "Besp", b_lab = "WoolB")
 #'
 #' fmt_effect_md(model, "woolB", "i")
-fmt_effect_md <- function(model, effect, terms = "besp", digits = 2,
-                          statistic = "t", b_lab = NULL, ci_width = .95) {
-
+fmt_effect_md <- function(
+  model,
+  effect,
+  terms = "besp",
+  digits = 2,
+  statistic = "t",
+  b_lab = NULL,
+  ci_width = .95
+) {
   stopifnot(length(digits) %in% c(1, nchar(terms)))
   stopifnot(inherits(model, c("lm", "lmerMod")))
 
