@@ -163,6 +163,7 @@ get_terms.default <- function(model, effect, terms, ci_width = .95) {
     stats::setNames(to_get)
 }
 
+
 get_terms.lmerMod <- function(model, effect, terms, ci_width = .95) {
   to_get <- str_tokenize(terms)
   ci <- "i" %in% to_get
@@ -181,7 +182,6 @@ get_terms.lmerMod <- function(model, effect, terms, ci_width = .95) {
   # Use Kenwood Rogers approximation
   use_kr <- any(c("S", "p") %in% to_get)
   if (use_kr) {
-
     kr_test <- parameters::p_value_kenward(model) %>%
       as.data.frame() %>%
       dplyr::rename(term = .data$Parameter, p.value = .data$p)
