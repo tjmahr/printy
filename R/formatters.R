@@ -115,6 +115,7 @@ paste0_after <- function(..., .first) {
 #' @param ps *p*-values to format
 #' @return a character vector of markdown formatted *p*-values
 #'
+#' @export
 #' @examples
 #' fmt_p_value_md(0.0912)
 #' fmt_p_value_md(0.0512)
@@ -122,7 +123,6 @@ paste0_after <- function(..., .first) {
 #'
 #' # "p less than" notation kicks in below .001.
 #' fmt_p_value_md(0.0005)
-#' @export
 fmt_p_value_md <- function(ps) {
   prefixes <- c("*p*&nbsp;< ", "*p*&nbsp;= ", "*p*&nbsp;> ")
   label_pvalue_2 <- scales::label_pvalue(accuracy = .01 , prefix = prefixes)
