@@ -48,10 +48,11 @@ skel_conf_interval <- function(x, skeleton = "[{x[1]}, {x[2]}]") {
 #' @return the formatted string
 #' @rdname skel_stat_n_value
 #' @export
-skel_stat_n_value <- function(x, stat = "t",
-                              skeleton = "{stat}({x[1]})&nbsp;= {x[2]}") {
+skel_stat_n_value <- function(
+  x,
+  stat = "t",
+  skeleton = "{stat}({x[1]})&nbsp;= {x[2]}"
+) {
   stopifnot(length(x) == 2)
   as.character(glue::glue(skeleton))
 }
-
-

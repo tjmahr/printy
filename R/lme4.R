@@ -4,7 +4,7 @@ pretty_lme4_ranefs <- function(model) {
   vars <- dplyr::vars
   funs <- dplyr::funs
 
-  table <-  tidy_ranef_summary(model)
+  table <- tidy_ranef_summary(model)
 
   ranef_names <- setdiff(names(table), c("var1", "grp", "vcov", "sdcor"))
 
@@ -19,12 +19,14 @@ pretty_lme4_ranefs <- function(model) {
     # Format variable names and group names
     dplyr::mutate_(
       var1 = ~ fmt_replace_na(var1, "&nbsp;"),
-      grp =  ~ str_replace_same_as_previous(grp, "&nbsp;")) %>%
+      grp = ~ str_replace_same_as_previous(grp, "&nbsp;")
+    ) %>%
     dplyr::rename_(
-      Group = ~ grp,
-      Parameter = ~ var1,
-      Variance = ~ vcov,
-      SD = ~ sdcor)
+      Group = ~grp,
+      Parameter = ~var1,
+      Variance = ~vcov,
+      SD = ~sdcor
+    )
 
   # Rename columns 5:n to c("Correlations", "&nbsp;", ..., "&nbsp;")
   names_to_replace <- seq(from = 5, to = length(names(table)))
@@ -56,8 +58,8 @@ tidy_ranef_summary <- function(model) {
 
   # Create some 1s for the diagonal of the correlation matrix
   self_cor <- vars %>%
-    dplyr::select_( ~ -vcov) %>%
-    dplyr::mutate_(var2 = ~ var1, sdcor = ~ 1.0) %>%
+    dplyr::select_(~ -vcov) %>%
+    dplyr::mutate_(var2 = ~var1, sdcor = ~1.0) %>%
     stats::na.omit()
 
   # Spread out long-from correlations into a matrix
@@ -86,7 +88,7 @@ tidy_ranef_summary <- function(model) {
     lapply(dplyr::mutate_, .dots = list(var2 = ~ as.character(var2))) %>%
     # lapply(tibble::rownames_to_column, "..sort") %>%
     dplyr::bind_rows() %>%
-    dplyr::rename_(var1 = ~ var2)
+    dplyr::rename_(var1 = ~var2)
 
   sorting_names <- utils::tail(names(cor_matrix), -2)
 
@@ -99,7 +101,7 @@ sort_ranef_grps <- function(df) {
   residual <- dplyr::filter_(df, ~ grp == "Residual")
   df %>%
     dplyr::filter_(~ grp != "Residual") %>%
-    dplyr::arrange_(~ grp) %>%
+    dplyr::arrange_(~grp) %>%
     dplyr::bind_rows(residual)
 }
 

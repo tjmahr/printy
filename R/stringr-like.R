@@ -25,7 +25,7 @@ str_tokenize <- function(string, pattern = NULL) {
 #' @export
 #' @examples
 #' str_replace_same_as_previous(
-#'   c("a", "a", "a", "b" , "b", "c", "d", "d"),
+#'   c("a", "a", "a", "b", "b", "c", "d", "d"),
 #'   ""
 #' )
 str_replace_same_as_previous <- function(string, replacement) {

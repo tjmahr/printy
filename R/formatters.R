@@ -1,4 +1,3 @@
-
 #' Format negative numbers with a minus sign
 #'
 #' @param xs a vector of numbers or a character vector representing numbers
@@ -19,7 +18,6 @@ fmt_minus_sign <- function(xs) {
     stringr::str_replace("^(&minus;)(0)$", "\\2") %>%
     stringr::str_replace("^(&minus;)(0[.]0+)$", "\\2")
 }
-
 
 #' Format numbers to remove leading zeros
 #'
@@ -64,7 +62,6 @@ fmt_leading_zero <- function(xs) {
 is_greater_than_1 <- function(xs) {
   xs > 1
 }
-
 
 #' @export
 fmt_fix_digits <- function(xs, n = 2) {
@@ -138,4 +135,3 @@ fmt_p_value_md <- function(ps) {
   ps %>%
     stringr::str_replace("(=|<|>) 0[.]", "\\1 .")
 }
-

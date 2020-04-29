@@ -1,4 +1,3 @@
-
 #' Format an effect from a model object in markdown
 #'
 #' @param model a model object
@@ -74,21 +73,17 @@ fmt_effect_md <- function(
 
     output[item_i] <- switch(
       item_name,
-
       B = item_value %>%
         fmt_fix_digits(digits[item_i]) %>%
         fmt_minus_sign() %>%
         prefix_equals("*b*", b_lab),
-
       b = item_value %>%
         fmt_fix_digits(digits[item_i]) %>%
         fmt_minus_sign() %>%
         prefix_equals("*b*"),
-
       e = item_value %>%
         fmt_fix_digits(digits[item_i]) %>%
         prefix_equals("SE"),
-
       i = item_value %>%
         fmt_fix_digits(digits[item_i]) %>%
         fmt_minus_sign() %>%
@@ -96,27 +91,22 @@ fmt_effect_md <- function(
         prefix_equals(
           paste0(scales::percent(ci_width, accuracy = 1), " CI")
         ),
-
       s = item_value %>%
         fmt_fix_digits(digits[item_i]) %>%
         fmt_minus_sign() %>%
         prefix_equals(md_ital(statistic)),
-
       S = item_value %>%
         round_S(digits[item_i]) %>%
         fmt_minus_sign() %>%
         skel_stat_n_value(stat = md_ital(statistic)),
-
       p = item_value %>%
         fmt_p_value_md(),
-
       NA
     )
   }
 
   paste0(output, collapse = ", ")
 }
-
 
 # round the first item (degrees of freedom), fix digits on second (statistic)
 round_S <- function(x, digits) {
@@ -133,7 +123,6 @@ prefix_equals <- function(x, main, sub = NULL) {
 
 md_ital <- function(x) paste0("*", x, "*")
 
-
 get_terms <- function(model, effect, terms, ...) {
   UseMethod("get_terms")
 }
@@ -148,7 +137,7 @@ get_terms.default <- function(model, effect, terms, ci_width = .95) {
     conf.level = ci_width
   )
 
-  if (! effect %in% summary[["term"]]) {
+  if (!effect %in% summary[["term"]]) {
     stop(rlang::as_label(effect), " is not a parameter name")
   }
 
@@ -163,7 +152,6 @@ get_terms.default <- function(model, effect, terms, ci_width = .95) {
     stats::setNames(to_get)
 }
 
-
 get_terms.lmerMod <- function(model, effect, terms, ci_width = .95) {
   to_get <- str_tokenize(terms)
   ci <- "i" %in% to_get
@@ -175,7 +163,7 @@ get_terms.lmerMod <- function(model, effect, terms, ci_width = .95) {
     conf.level = ci_width
   )
 
-  if (! effect %in% summary[["term"]]) {
+  if (!effect %in% summary[["term"]]) {
     stop(rlang::as_label(effect), " is not a parameter name")
   }
 
@@ -206,7 +194,6 @@ get_terms.lmerMod <- function(model, effect, terms, ci_width = .95) {
 
 get_term_from_broom <- function(term, summary) {
   slist <- as.list(summary)
-
   switch(
     term,
     b = slist[["estimate"]],
@@ -219,7 +206,6 @@ get_term_from_broom <- function(term, summary) {
     NA
   )
 }
-
 
 mod_get_residual_df <- function(model, ...) UseMethod("mod_get_residual_df")
 
