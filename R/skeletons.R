@@ -37,6 +37,64 @@ skel_conf_interval_pair <- function(x, skeleton = "[{x[1]}, {x[2]}]") {
   as.character(glue::glue(skeleton))
 }
 
+#' Skeleton for a range of numbers
+#'
+#' `skel_range()` is a vectorized function. Use it to make multiple range from,
+#' say, data-frame columns. `skel_range_pair()` is the unvectorized function.
+#' Use it to make a single range  from a vector (pair) of two numbers.
+#'
+#' @details These functions are wrappers around calls to `glue::glue()`.
+#'
+#' @param xs a vector of the first elements in the range
+#' @param ys a vector of the second elements in the range
+#' @param x a vector of two elements to plug into the range
+#' @param skeleton glue-style format to fill. defaults to `"{xs}&ndash;{ys}"` for
+#'   `skel_range()` and `"{x[1]}&ndash;{x[2]}"` for
+#'   `skel_range_pair()`.
+#' @return strings representing ranges
+#' @name skel_range
+#' @rdname skel_range
+#' @examples
+#' skel_range(c(.1, .2), c(.3, .4))
+#' skel_range_pair(c(.1, .3))
+NULL
+
+
+#' Skeleton for missing values
+#'
+#' `skel_range()` is a vectorized function. Use it to make multiple range from,
+#' say, data-frame columns. `skel_range_pair()` is the unvectorized function.
+#' Use it to make a single range  from a vector (pair) of two numbers.
+#'
+#' @details These functions are wrappers around calls to `glue::glue()`.
+#'
+#' @param xs a vector of the first elements in the range
+#' @param ys a vector of the second elements in the range
+#' @param x a vector of two elements to plug into the range
+#' @param skeleton glue-style format to fill. defaults to `"{xs}&ndash;{ys}"` for
+#'   `skel_range()` and `"{x[1]}&ndash;{x[2]}"` for
+#'   `skel_range_pair()`.
+#' @return strings representing ranges
+#' @name skel_range
+#' @rdname skel_range
+#' @examples
+#' skel_range(c(.1, .2), c(.3, .4))
+#' skel_range_pair(c(.1, .3))
+NULL
+
+#' @rdname skel_range
+#' @export
+skel_range_pair <- function(x, skeleton = "{x[1]}&ndash;{x[2]}") {
+  stopifnot(length(x) == 2)
+  as.character(glue::glue(skeleton))
+}
+
+#' @rdname skel_range
+#' @export
+skel_range <- function(xs, ys, skeleton = "{xs}&ndash;{ys}") {
+  as.character(glue::glue(skeleton))
+}
+
 
 #' Skeleton for t-statistic-like functions
 #'
