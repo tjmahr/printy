@@ -20,7 +20,7 @@ table.
 }
 \examples{
 str_replace_same_as_previous(
-  c("a", "a", "a", "b" , "b", "c", "d", "d"),
+  c("a", "a", "a", "b", "b", "c", "d", "d"),
   ""
 )
 }

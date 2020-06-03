@@ -87,7 +87,7 @@ fmt_effect_md <- function(
       i = item_value %>%
         fmt_fix_digits(digits[item_i]) %>%
         fmt_minus_sign() %>%
-        skel_conf_interval() %>%
+        skel_conf_interval_pair() %>%
         prefix_equals(
           paste0(scales::percent(ci_width, accuracy = 1), " CI")
         ),
@@ -98,7 +98,7 @@ fmt_effect_md <- function(
       S = item_value %>%
         round_S(digits[item_i]) %>%
         fmt_minus_sign() %>%
-        skel_stat_n_value(stat = md_ital(statistic)),
+        skel_stat_n_value_pair(stat = md_ital(statistic)),
       p = item_value %>%
         fmt_p_value_md(),
       NA

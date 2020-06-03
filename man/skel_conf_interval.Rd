@@ -2,12 +2,12 @@
 % Please edit documentation in R/skeletons.R
 \name{skel_conf_interval}
 \alias{skel_conf_interval}
-\alias{skel_conf_interval_v}
+\alias{skel_conf_interval_pair}
 \title{Skeleton for a confidence interval}
 \usage{
-skel_conf_interval_v(xs, ys, skeleton = "[{xs}, {ys}]")
+skel_conf_interval(xs, ys, skeleton = "[{xs}, {ys}]")
 
-skel_conf_interval(x, skeleton = "[{x[1]}, {x[2]}]")
+skel_conf_interval_pair(x, skeleton = "[{x[1]}, {x[2]}]")
 }
 \arguments{
 \item{xs}{a vector of the first elements in the intervals}
@@ -15,8 +15,8 @@ skel_conf_interval(x, skeleton = "[{x[1]}, {x[2]}]")
 \item{ys}{a vector of the second elements in the intervals}
 
 \item{skeleton}{glue-style format to fill. defaults to \code{"[{xs}, {ys}]"} for
-\code{skel_conf_interval_v()} and \code{"[{x[1]}, {x[2]}]"} for
-\code{skel_conf_interval()}.}
+\code{skel_conf_interval()} and \code{"[{x[1]}, {x[2]}]"} for
+\code{skel_conf_interval_pair()}.}
 
 \item{x}{a vector of two elements to plug into the confidence interval}
 }
@@ -24,15 +24,17 @@ skel_conf_interval(x, skeleton = "[{x[1]}, {x[2]}]")
 strings representing confidence intervals
 }
 \description{
-\code{skel_conf_interval_v()} is the vectorized function. Use it to make multiple
-intervals from, say, data-frame columns. \code{skel_conf_interval()} is the
-unvectorized function. Use it to make a single interval from a vector of two
+\code{skel_conf_interval()} is a vectorized function. Use it to make multiple
+intervals from, say, data-frame columns. \code{skel_conf_interval_pair()} is the
+unvectorized function. Use it to make a single interval from a vector (pair) of two
 numbers.
 }
 \details{
 These functions are wrappers around calls to \code{glue::glue()}.
+
+Originally, \code{skel_conf_interval()} was named \code{skel_conf_interval_v()}.
 }
 \examples{
-skel_conf_interval_v(c(.1, .2), c(.3, .4))
-skel_conf_interval(c(.1, .3))
+skel_conf_interval(c(.1, .2), c(.3, .4))
+skel_conf_interval_pair(c(.1, .3))
 }

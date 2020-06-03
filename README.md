@@ -101,11 +101,11 @@ fmt_p_value(p, digits = 3)
 ``` r
 p <- c(1, 0.1, 0.06, 0.059, 0.051, 0.01, 0.001, 0.0001)
 fmt_p_value_md(p)
-#> [1] "*p*&nbsp;= 1.00" "*p*&nbsp;= .10"  "*p*&nbsp;= .06"  "*p*&nbsp;= .059"
+#> [1] "*p*&nbsp;> .99"  "*p*&nbsp;= .10"  "*p*&nbsp;= .06"  "*p*&nbsp;= .059"
 #> [5] "*p*&nbsp;= .051" "*p*&nbsp;= .010" "*p*&nbsp;= .001" "*p*&nbsp;< .001"
 ```
 
-These render as: *p* = 1.00, *p* = .10, *p* = .06, *p* = .059, *p* =
+These render as: *p* \> .99, *p* = .10, *p* = .06, *p* = .059, *p* =
 .051, *p* = .010, *p* = .001, *p* \< .001.
 
 ### Experimental formatters 🧪
@@ -179,8 +179,7 @@ fmt_effect_md(model, "woolB", terms = "bSp")
 #> [1] "*b*&nbsp;= &minus;16.33, *t*(48)&nbsp;= &minus;3.17, *p*&nbsp;= .003"
 ```
 
-*b* = −16.33, *t*(48) = −3.17, *p* =
-.003
+*b* = −16.33, *t*(48) = −3.17, *p* = .003
 
 ``` r
 # extra digits (except for p-values; those go through `fmt_p_value_md()`)
@@ -201,14 +200,15 @@ These are the currently supported models:
 I use `fmt_` for formatting functions. The other convention in the
 package is `skel_` to plug values into a formatting skeleton.
 
-`skel_conf_interval()` creates a confidence interval from two numbers.
+`skel_conf_interval_pair()` creates a confidence interval from two
+numbers.
 
 ``` r
-skel_conf_interval(c(1, 2))
+skel_conf_interval_pair(c(1, 2))
 #> [1] "[1, 2]"
 ```
 
-`skel_conf_interval_v()` is the vectorized version. It is suitable for
+`skel_conf_interval()` is the vectorized version. It is suitable for
 working on columns of numbers.
 
 ``` r
@@ -222,19 +222,19 @@ ci_ends <- confint(model)[, 2] %>%
   fmt_fix_digits(2) %>% 
   fmt_minus_sign()
 
-skel_conf_interval_v(ci_starts, ci_ends)
+skel_conf_interval(ci_starts, ci_ends)
 #> [1] "[37.22, 51.89]"               "[&minus;26.70, &minus;5.96]" 
 #> [3] "[&minus;30.93, &minus;10.19]" "[&minus;30.37, &minus;9.63]" 
 #> [5] "[6.45, 35.78]"                "[&minus;4.11, 25.22]"
 ```
 
-`skel_stat_n_value()` creates *t*-test-like or correlation-like
+`skel_stat_n_value_pair()` creates *t*-test-like or correlation-like
 statistic from a vector of two numbers.
 
 ``` r
-skel_stat_n_value(c("20", "2.0"))
+skel_stat_n_value_pair(c("20", "2.0"))
 #> [1] "t(20)&nbsp;= 2.0"
-skel_stat_n_value(c("39", ".98"), stat = "*r*")
+skel_stat_n_value_pair(c("39", ".98"), stat = "*r*")
 #> [1] "*r*(39)&nbsp;= .98"
 ```
 
@@ -250,7 +250,6 @@ For example, we can fit the model.
 ``` r
 library(lme4)
 #> Loading required package: Matrix
-#> Warning: package 'Matrix' was built under R version 3.5.3
 model <- lmer(Reaction ~ Days + (Days | Subject), sleepstudy)
 summary(model)
 #> Linear mixed model fit by REML ['lmerMod']
@@ -261,18 +260,18 @@ summary(model)
 #> 
 #> Scaled residuals: 
 #>     Min      1Q  Median      3Q     Max 
-#> -3.9536 -0.4634  0.0231  0.4633  5.1793 
+#> -3.9536 -0.4634  0.0231  0.4634  5.1793 
 #> 
 #> Random effects:
 #>  Groups   Name        Variance Std.Dev. Corr
-#>  Subject  (Intercept) 611.90   24.737       
-#>           Days         35.08    5.923   0.07
+#>  Subject  (Intercept) 612.10   24.741       
+#>           Days         35.07    5.922   0.07
 #>  Residual             654.94   25.592       
 #> Number of obs: 180, groups:  Subject, 18
 #> 
 #> Fixed effects:
 #>             Estimate Std. Error t value
-#> (Intercept)  251.405      6.824  36.843
+#> (Intercept)  251.405      6.825  36.838
 #> Days          10.467      1.546   6.771
 #> 
 #> Correlation of Fixed Effects:
@@ -285,8 +284,8 @@ summary(model)
 ``` r
 pretty_lme4_ranefs(model)
 #>      Group   Parameter Variance    SD Correlations &nbsp;
-#> 1  Subject (Intercept)   611.90 24.74         1.00 &nbsp;
-#> 2   &nbsp;        Days    35.08  5.92          .07   1.00
+#> 1  Subject (Intercept)   612.10 24.74         1.00 &nbsp;
+#> 2   &nbsp;        Days    35.07  5.92          .07   1.00
 #> 3 Residual      &nbsp;   654.94 25.59       &nbsp; &nbsp;
 ```
 
@@ -301,8 +300,8 @@ knitr::kable(
 
 | Group    | Parameter   | Variance |    SD | Correlations |      |
 | :------- | :---------- | -------: | ----: | -----------: | :--- |
-| Subject  | (Intercept) |   611.90 | 24.74 |         1.00 |      |
-|          | Days        |    35.08 |  5.92 |          .07 | 1.00 |
+| Subject  | (Intercept) |   612.10 | 24.74 |         1.00 |      |
+|          | Days        |    35.07 |  5.92 |          .07 | 1.00 |
 | Residual |             |   654.94 | 25.59 |              |      |
 
 Here’s a dumb model with a lot going on in the random effects.
@@ -328,7 +327,7 @@ model
 #> Fixed Effects:
 #> (Intercept)           wt           hp        wt:hp  
 #>    48.98745     -7.80904     -0.12118      0.02737  
-#> convergence code 0; 1 optimizer warnings; 0 lme4 warnings
+#> convergence code 0; 0 optimizer warnings; 1 lme4 warnings
 
 knitr::kable(
   pretty_lme4_ranefs(model), 

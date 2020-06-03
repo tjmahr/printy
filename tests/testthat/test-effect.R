@@ -41,7 +41,7 @@ test_that("fmt_effect_md() matches hand-formatted results on lm() models", {
     as.vector() %>%
     fmt_fix_digits(2) %>%
     fmt_minus_sign() %>%
-    skel_conf_interval() %>%
+    skel_conf_interval_pair() %>%
     paste0("95% CI&nbsp;= ", .)
 
   i_printy <- fmt_effect_md(model, effect, "i")
@@ -101,7 +101,7 @@ test_that("fmt_effect_md() handles lmer() models", {
     as.vector() %>%
     fmt_fix_digits(2) %>%
     fmt_minus_sign() %>%
-    skel_conf_interval() %>%
+    skel_conf_interval_pair() %>%
     paste0("95% CI&nbsp;= ", .)
 
   i_printy <- fmt_effect_md(model, effect, "i")
@@ -115,7 +115,7 @@ test_that("fmt_effect_md() handles lmer() models", {
   kr <- pbkrtest::KRmodcomp(model, model2)
   df <- kr$stats$ddf %>% round(2) %>% as.character()
 
-  S_manual <- skel_stat_n_value(c(df, s_value), stat = "*t*")
+  S_manual <- skel_stat_n_value_pair(c(df, s_value), stat = "*t*")
   S_printy <- fmt_effect_md(model, effect, "S")
 
   p_manual <- kr$stats$p.value %>%

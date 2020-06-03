@@ -166,13 +166,13 @@ Skeletons 🦴
 I use `fmt_` for formatting functions. The other convention in the package is
 `skel_` to plug values into a formatting skeleton. 
 
-`skel_conf_interval()` creates a confidence interval from two numbers.
+`skel_conf_interval_pair()` creates a confidence interval from two numbers.
 
 ```{r}
-skel_conf_interval(c(1, 2))
+skel_conf_interval_pair(c(1, 2))
 ```
 
-`skel_conf_interval_v()` is the vectorized version. It is suitable for working
+`skel_conf_interval()` is the vectorized version. It is suitable for working
 on columns of numbers.
 
 ```{r}
@@ -186,15 +186,15 @@ ci_ends <- confint(model)[, 2] %>%
   fmt_fix_digits(2) %>% 
   fmt_minus_sign()
 
-skel_conf_interval_v(ci_starts, ci_ends)
+skel_conf_interval(ci_starts, ci_ends)
 ```
 
-`skel_stat_n_value()` creates *t*-test-like or correlation-like statistic from a
+`skel_stat_n_value_pair()` creates *t*-test-like or correlation-like statistic from a
 vector of two numbers.
 
 ```{r}
-skel_stat_n_value(c("20", "2.0"))
-skel_stat_n_value(c("39", ".98"), stat = "*r*")
+skel_stat_n_value_pair(c("20", "2.0"))
+skel_stat_n_value_pair(c("39", ".98"), stat = "*r*")
 ```
 
 
