@@ -71,7 +71,7 @@ test_cor %>%
 ```
 
 |      |  mpg |  cyl | disp |   hp |
-| ---- | ---: | ---: | ---: | ---: |
+|:-----|-----:|-----:|-----:|-----:|
 | mpg  | 1.00 | −.85 | −.85 | −.78 |
 | cyl  | −.85 | 1.00 |  .90 |  .83 |
 | disp | −.85 |  .90 | 1.00 |  .79 |
@@ -92,11 +92,9 @@ fmt_p_value(p, digits = 3)
 
 `fmt_p_value_md()` formats *p*-values in markdown with nice defaults.
 
-  - Use 3 digits of precision for values less than .06
-  - Otherwise, use 2 digits of precision.
-  - Include *p* in markdown
-
-<!-- end list -->
+-   Use 3 digits of precision for values less than .06
+-   Otherwise, use 2 digits of precision.
+-   Include *p* in markdown
 
 ``` r
 p <- c(1, 0.1, 0.06, 0.059, 0.051, 0.01, 0.001, 0.0001)
@@ -105,8 +103,8 @@ fmt_p_value_md(p)
 #> [5] "*p*&nbsp;= .051" "*p*&nbsp;= .010" "*p*&nbsp;= .001" "*p*&nbsp;< .001"
 ```
 
-These render as: *p* \> .99, *p* = .10, *p* = .06, *p* = .059, *p* =
-.051, *p* = .010, *p* = .001, *p* \< .001.
+These render as: *p* &gt; .99, *p* = .10, *p* = .06, *p* = .059, *p* =
+.051, *p* = .010, *p* = .001, *p* &lt; .001.
 
 ### Experimental formatters 🧪
 
@@ -191,9 +189,35 @@ fmt_effect_md(model, "woolB", terms = "bep", digits = 6)
 
 These are the currently supported models:
 
-  - `lm()`
-  - `lme4::lmer()` with Wald confidence intervals and Kenwood–Roger
-    approximation for the degrees of freedom and *p*-values.
+-   `lm()`
+-   `lme4::lmer()`
+
+For lme4 models, Wald confidence intervals are provided. For *p*-values,
+the Kenwood–Roger approximation for the degrees of freedom is used by
+default. We can also choose a [method supported by the parameters
+package](https://easystats.github.io/parameters/reference/p_value.lmerMod.html).
+
+``` r
+library(lme4)
+#> Loading required package: Matrix
+data(Machines, package = "nlme")
+
+m <- lmer(score ~ 1 + Machine + (Machine | Worker), data = Machines)
+
+# Default is Kenward
+fmt_effect_md(m, "MachineB", terms = "beSp")
+#> [1] "*b*&nbsp;= 7.97, SE&nbsp;= 2.42, *t*(5)&nbsp;= 3.29, *p*&nbsp;= .022"
+fmt_effect_md(m, "MachineB", terms = "beSp", p_value_method = "kenward")
+#> [1] "*b*&nbsp;= 7.97, SE&nbsp;= 2.42, *t*(5)&nbsp;= 3.29, *p*&nbsp;= .022"
+
+# Note the infinite degrees of freedom for Wald
+fmt_effect_md(m, "MachineB", terms = "beSp", p_value_method = "wald")
+#> [1] "*b*&nbsp;= 7.97, SE&nbsp;= 2.42, *t*(Inf)&nbsp;= 3.29, *p*&nbsp;< .001"
+
+# This example doesn't find differences between Satterthwaite and Kenward
+fmt_effect_md(m, "MachineB", terms = "beSp", p_value_method = "satterthwaite")
+#> [1] "*b*&nbsp;= 7.97, SE&nbsp;= 2.42, *t*(5)&nbsp;= 3.29, *p*&nbsp;= .022"
+```
 
 ## Skeletons 🦴
 
@@ -249,7 +273,6 @@ For example, we can fit the model.
 
 ``` r
 library(lme4)
-#> Loading required package: Matrix
 model <- lmer(Reaction ~ Days + (Days | Subject), sleepstudy)
 summary(model)
 #> Linear mixed model fit by REML ['lmerMod']
@@ -298,11 +321,11 @@ knitr::kable(
 )
 ```
 
-| Group    | Parameter   | Variance |    SD | Correlations |      |
-| :------- | :---------- | -------: | ----: | -----------: | :--- |
-| Subject  | (Intercept) |   612.10 | 24.74 |         1.00 |      |
-|          | Days        |    35.07 |  5.92 |          .07 | 1.00 |
-| Residual |             |   654.94 | 25.59 |              |      |
+| Group    | Parameter   | Variance |    SD | Correlations |      |
+|:---------|:------------|---------:|------:|-------------:|:-----|
+| Subject  | (Intercept) |   612.10 | 24.74 |         1.00 |      |
+|          | Days        |    35.07 |  5.92 |          .07 | 1.00 |
+| Residual |             |   654.94 | 25.59 |              |      |
 
 Here’s a dumb model with a lot going on in the random effects.
 
@@ -327,7 +350,7 @@ model
 #> Fixed Effects:
 #> (Intercept)           wt           hp        wt:hp  
 #>    48.98745     -7.80904     -0.12118      0.02737  
-#> convergence code 0; 0 optimizer warnings; 1 lme4 warnings
+#> optimizer (nloptwrap) convergence code: 0 (OK) ; 0 optimizer warnings; 1 lme4 warnings
 
 knitr::kable(
   pretty_lme4_ranefs(model), 
@@ -335,12 +358,12 @@ knitr::kable(
 )
 ```
 
-| Group    | Parameter   | Variance |   SD | Correlations |      |      |      |
-| :------- | :---------- | -------: | ---: | -----------: | ---: | ---: | ---: |
-| am       | (Intercept) |     3.76 | 1.94 |         1.00 |      |      |      |
-|          | hp          |     0.00 | 0.00 |         −.96 | 1.00 |      |      |
-|          | cyl         |     0.21 | 0.46 |         −.98 |  .93 | 1.00 |      |
-|          | hp:cyl      |     0.00 | 0.00 |          .95 | −.94 | −.99 | 1.00 |
-| gear     | (Intercept) |     2.42 | 1.56 |         1.00 |      |      |      |
-|          | drat        |     0.03 | 0.17 |        −1.00 | 1.00 |      |      |
-| Residual |             |     4.47 | 2.11 |              |      |      |      |
+| Group    | Parameter   | Variance |   SD | Correlations |      |      |      |
+|:---------|:------------|---------:|-----:|-------------:|-----:|-----:|-----:|
+| am       | (Intercept) |     3.76 | 1.94 |         1.00 |      |      |      |
+|          | hp          |     0.00 | 0.00 |         −.96 | 1.00 |      |      |
+|          | cyl         |     0.21 | 0.46 |         −.98 |  .93 | 1.00 |      |
+|          | hp:cyl      |     0.00 | 0.00 |          .95 | −.94 | −.99 | 1.00 |
+| gear     | (Intercept) |     2.42 | 1.56 |         1.00 |      |      |      |
+|          | drat        |     0.03 | 0.17 |        −1.00 | 1.00 |      |      |
+| Residual |             |     4.47 | 2.11 |              |      |      |      |

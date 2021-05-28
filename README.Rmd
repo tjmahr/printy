@@ -156,8 +156,30 @@ fmt_effect_md(model, "woolB", terms = "bep", digits = 6)
 These are the currently supported models:
 
   - `lm()`
-  - `lme4::lmer()` with Wald confidence intervals and Kenwood--Roger
-    approximation for the degrees of freedom and *p*-values.
+  - `lme4::lmer()` 
+
+For lme4 models, Wald confidence intervals are provided. For *p*-values, the
+Kenwood--Roger approximation for the degrees of freedom is used by default. We
+can also choose a [method supported by the parameters
+package](https://easystats.github.io/parameters/reference/p_value.lmerMod.html).
+
+```{r}
+library(lme4)
+data(Machines, package = "nlme")
+
+m <- lmer(score ~ 1 + Machine + (Machine | Worker), data = Machines)
+
+# Default is Kenward
+fmt_effect_md(m, "MachineB", terms = "beSp")
+fmt_effect_md(m, "MachineB", terms = "beSp", p_value_method = "kenward")
+
+# Note the infinite degrees of freedom for Wald
+fmt_effect_md(m, "MachineB", terms = "beSp", p_value_method = "wald")
+
+# This example doesn't find differences between Satterthwaite and Kenward
+fmt_effect_md(m, "MachineB", terms = "beSp", p_value_method = "satterthwaite")
+```
+
 
 
 Skeletons 🦴

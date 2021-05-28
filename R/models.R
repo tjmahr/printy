@@ -53,7 +53,8 @@ fmt_effect_md <- function(
   digits = 2,
   statistic = "t",
   b_lab = NULL,
-  ci_width = .95
+  ci_width = .95,
+  p_value_method = NULL
 ) {
   stopifnot(length(digits) %in% c(1, nchar(terms)))
   stopifnot(inherits(model, c("lm", "lmerMod")))
@@ -62,7 +63,13 @@ fmt_effect_md <- function(
     digits <- rep(digits, nchar(terms))
   }
 
-  term_values <- get_terms(model, effect, terms, ci_width = ci_width)
+  term_values <- get_terms(
+    model,
+    effect,
+    terms,
+    ci_width = ci_width,
+    p_value_method = p_value_method
+  )
   output <- seq_along(term_values)
 
   b_lab <- ifelse(is.null(b_lab), effect, b_lab)
@@ -127,7 +134,13 @@ get_terms <- function(model, effect, terms, ...) {
   UseMethod("get_terms")
 }
 
-get_terms.default <- function(model, effect, terms, ci_width = .95) {
+get_terms.default <- function(
+  model,
+  effect,
+  terms,
+  ci_width = .95,
+  ...
+) {
   to_get <- str_tokenize(terms)
   ci <- "i" %in% to_get
 
@@ -152,9 +165,19 @@ get_terms.default <- function(model, effect, terms, ci_width = .95) {
     stats::setNames(to_get)
 }
 
-get_terms.lmerMod <- function(model, effect, terms, ci_width = .95) {
+get_terms.lmerMod <- function(
+  model,
+  effect,
+  terms,
+  ci_width = .95,
+  p_value_method = NULL
+) {
   to_get <- str_tokenize(terms)
   ci <- "i" %in% to_get
+
+  if (is.null(p_value_method)) {
+    p_value_method = "kenward"
+  }
 
   summary <- broom.mixed::tidy(
     model,
@@ -167,21 +190,22 @@ get_terms.lmerMod <- function(model, effect, terms, ci_width = .95) {
     stop(rlang::as_label(effect), " is not a parameter name")
   }
 
-  # Use Kenwood Rogers approximation
-  use_kr <- any(c("S", "p") %in% to_get)
-  if (use_kr) {
-    kr_test <- parameters::p_value_kenward(model) %>%
+  compute_p <- any(c("S", "p") %in% to_get)
+  if (compute_p) {
+    p_stats <- parameters::p_value(model, method = p_value_method) %>%
       as.data.frame() %>%
       dplyr::rename(term = .data$Parameter, p.value = .data$p)
 
-    kr_test[["df"]] <- parameters::dof_kenward(model)
-    kr_test[["std.error"]] <- parameters::se_kenward(model)[["SE"]]
-
-    kr_test[["statistic"]] <- lme4::fixef(model) / kr_test[["std.error"]]
+    p_stats[["df"]] <- model %>%
+      parameters::dof(method = p_value_method)
+    p_stats[["std.error"]] <- model %>%
+      parameters::standard_error(method = p_value_method) %>%
+      getElement("SE")
+    p_stats[["statistic"]] <- lme4::fixef(model) / p_stats[["std.error"]]
 
     summary[["std.error"]] <- NULL
     summary[["statistic"]] <- NULL
-    summary <- dplyr::left_join(summary, kr_test, by = "term")
+    summary <- dplyr::left_join(summary, p_stats, by = "term")
   }
 
   summary <- summary[summary$term == effect, ]
