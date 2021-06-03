@@ -262,6 +262,20 @@ skel_stat_n_value_pair(c("39", ".98"), stat = "*r*")
 #> [1] "*r*(39)&nbsp;= .98"
 ```
 
+`skel_se()` and `skel_ci()` are shorthand functions to help with inline
+reporting.
+
+``` r
+skel_se(c(10, 4))
+#> [1] "SE&nbsp;= 10" "SE&nbsp;= 4"
+
+skel_ci(c("[1, 2]"))
+#> [1] "95% CI&nbsp;= [1, 2]"
+
+skel_ci(c("[1, 2]"), ci_width = 90)
+#> [1] "90% CI&nbsp;= [1, 2]"
+```
+
 ## Formatting tables from lme4 models 🖇
 
 One thing I’ve had to do a lot is summarize mixed effects models fit
