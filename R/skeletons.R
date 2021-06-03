@@ -96,6 +96,33 @@ skel_range <- function(xs, ys, skeleton = "{xs}&ndash;{ys}") {
 }
 
 
+#' Skeletons for inline stats
+#'
+#' @param xs a vector of the values to plug into the skeleton
+#' @param skeleton glue-style format to fill. defaults to `"SE&nbsp;= {x}"` for
+#'   `skel_se()` and `"95% CI&nbsp;= {x}"` for `skel_ci()`.
+#' @return strings with stats plugged in.
+#' @export
+#' @name skel_se
+#' @rdname skel_se
+skel_se <- function(x, skeleton = "SE&nbsp;= {x}") {
+  as.character(glue::glue(skeleton))
+}
+
+
+#' @param ci_width width of the confidence interval to report. Defaults to
+#'   `"95"`.
+#' @rdname skel_se
+#' @export
+skel_ci <- function(
+  x,
+  ci_width = "95",
+  skeleton = "{ci_width}% CI&nbsp;= {x}"
+) {
+  as.character(glue::glue(skeleton))
+}
+
+
 #' Skeleton for t-statistic-like functions
 #'
 #' This skeleton handles formats like t-statistics (`t(df) = value`) or

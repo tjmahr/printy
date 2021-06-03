@@ -11,7 +11,8 @@ fmt_effect_md(
   digits = 2,
   statistic = "t",
   b_lab = NULL,
-  ci_width = 0.95
+  ci_width = 0.95,
+  p_value_method = NULL
 )
 }
 \arguments{

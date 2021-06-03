@@ -22,16 +22,26 @@ skel_range(xs, ys, skeleton = "{xs}&ndash;{ys}")
 }
 \value{
 strings representing ranges
+
+strings representing ranges
 }
 \description{
+\code{skel_range()} is a vectorized function. Use it to make multiple range from,
+say, data-frame columns. \code{skel_range_pair()} is the unvectorized function.
+Use it to make a single range  from a vector (pair) of two numbers.
+
 \code{skel_range()} is a vectorized function. Use it to make multiple range from,
 say, data-frame columns. \code{skel_range_pair()} is the unvectorized function.
 Use it to make a single range  from a vector (pair) of two numbers.
 }
 \details{
 These functions are wrappers around calls to \code{glue::glue()}.
+
+These functions are wrappers around calls to \code{glue::glue()}.
 }
 \examples{
+skel_range(c(.1, .2), c(.3, .4))
+skel_range_pair(c(.1, .3))
 skel_range(c(.1, .2), c(.3, .4))
 skel_range_pair(c(.1, .3))
 }

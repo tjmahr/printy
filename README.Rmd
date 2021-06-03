@@ -211,12 +211,23 @@ ci_ends <- confint(model)[, 2] %>%
 skel_conf_interval(ci_starts, ci_ends)
 ```
 
-`skel_stat_n_value_pair()` creates *t*-test-like or correlation-like statistic from a
-vector of two numbers.
+`skel_stat_n_value_pair()` creates *t*-test-like or correlation-like statistic
+from a vector of two numbers.
 
 ```{r}
 skel_stat_n_value_pair(c("20", "2.0"))
 skel_stat_n_value_pair(c("39", ".98"), stat = "*r*")
+```
+
+`skel_se()` and `skel_ci()` are shorthand functions to help with inline
+reporting.
+
+```{r}
+skel_se(c(10, 4))
+
+skel_ci(c("[1, 2]"))
+
+skel_ci(c("[1, 2]"), ci_width = 90)
 ```
 
 
