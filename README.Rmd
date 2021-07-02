@@ -180,6 +180,24 @@ fmt_effect_md(m, "MachineB", terms = "beSp", p_value_method = "wald")
 fmt_effect_md(m, "MachineB", terms = "beSp", p_value_method = "satterthwaite")
 ```
 
+We can also format effects from `glmer()` models. `"S"` is not supported because
+the model summary uses *z* statistics, not *t* statistics.
+
+```{r, error = TRUE}
+gm1 <- glmer(
+  cbind(incidence, size - incidence) ~ period + (1 | herd),
+  data = cbpp, 
+  family = binomial
+)
+
+round(coef(summary(gm1)), 3)
+
+fmt_effect_md(gm1, "period2", terms = "bespi")
+
+# Don't use S here
+fmt_effect_md(gm1, "period2", terms = "beSp")
+```
+
 
 
 Skeletons 🦴

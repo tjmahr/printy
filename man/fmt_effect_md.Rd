@@ -9,7 +9,7 @@ fmt_effect_md(
   effect,
   terms = "besp",
   digits = 2,
-  statistic = "t",
+  statistic = NULL,
   b_lab = NULL,
   ci_width = 0.95,
   p_value_method = NULL
@@ -29,7 +29,8 @@ format and the order to print the terms. See details below. Defaults to
 vector to set the digits for each term, but in this case, the digits is
 still ignored for \emph{p}-values.}
 
-\item{statistic}{symbol to use for statistic. Defaults to \emph{t}.}
+\item{statistic}{symbol to use for statistic. Defaults to \emph{t} (or \emph{z} in
+glmer models).}
 
 \item{b_lab}{label to print in subscripts after \emph{b} for when \code{"B"} is one of
 the terms.}

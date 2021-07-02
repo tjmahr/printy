@@ -219,6 +219,31 @@ fmt_effect_md(m, "MachineB", terms = "beSp", p_value_method = "satterthwaite")
 #> [1] "*b*&nbsp;= 7.97, SE&nbsp;= 2.42, *t*(5)&nbsp;= 3.29, *p*&nbsp;= .022"
 ```
 
+We can also format effects from `glmer()` models. `"S"` is not supported
+because the model summary uses *z* statistics, not *t* statistics.
+
+``` r
+gm1 <- glmer(
+  cbind(incidence, size - incidence) ~ period + (1 | herd),
+  data = cbpp, 
+  family = binomial
+)
+
+round(coef(summary(gm1)), 3)
+#>             Estimate Std. Error z value Pr(>|z|)
+#> (Intercept)   -1.398      0.231  -6.048    0.000
+#> period2       -0.992      0.303  -3.272    0.001
+#> period3       -1.128      0.323  -3.495    0.000
+#> period4       -1.580      0.422  -3.743    0.000
+
+fmt_effect_md(gm1, "period2", terms = "bespi")
+#> [1] "*b*&nbsp;= &minus;0.99, SE&nbsp;= 0.30, *z*&nbsp;= &minus;3.27, *p*&nbsp;= .001, 95% CI&nbsp;= [&minus;1.59, &minus;0.40]"
+
+# Don't use S here
+fmt_effect_md(gm1, "period2", terms = "beSp")
+#> Error in get_terms.glmerMod(model, effect, terms, ci_width = ci_width, : S is not supported for glmer models
+```
+
 ## Skeletons 🦴
 
 I use `fmt_` for formatting functions. The other convention in the

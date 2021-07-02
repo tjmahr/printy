@@ -9,7 +9,8 @@
 #'   2 for 2 decimal places of precision for all terms. This argument can be a
 #'   vector to set the digits for each term, but in this case, the digits is
 #'   still ignored for *p*-values.
-#' @param statistic symbol to use for statistic. Defaults to *t*.
+#' @param statistic symbol to use for statistic. Defaults to *t* (or *z* in
+#'   glmer models).
 #' @param b_lab label to print in subscripts after *b* for when `"B"` is one of
 #'   the terms.
 #' @param ci_width width to use for confidence intervals when the term `"i"` is
@@ -51,13 +52,17 @@ fmt_effect_md <- function(
   effect,
   terms = "besp",
   digits = 2,
-  statistic = "t",
+  statistic = NULL,
   b_lab = NULL,
   ci_width = .95,
   p_value_method = NULL
 ) {
   stopifnot(length(digits) %in% c(1, nchar(terms)))
-  stopifnot(inherits(model, c("lm", "lmerMod")))
+  stopifnot(inherits(model, c("lm", "lmerMod", "glmerMod")))
+
+  if (is.null(statistic)) {
+    statistic <- if (inherits(model, "glmerMod")) "z" else "t"
+  }
 
   if (length(digits) == 1) {
     digits <- rep(digits, nchar(terms))
@@ -164,6 +169,39 @@ get_terms.default <- function(
     lapply(function(t) get_term_from_broom(t, summary)) %>%
     stats::setNames(to_get)
 }
+
+
+get_terms.glmerMod <- function(
+  model,
+  effect,
+  terms,
+  ci_width = .95,
+  ...
+) {
+  to_get <- str_tokenize(terms)
+  ci <- "i" %in% to_get
+
+  summary <- broom.mixed::tidy(
+    model,
+    conf.int = ci,
+    conf.level = ci_width
+  )
+
+  if (!effect %in% summary[["term"]]) {
+    stop(rlang::as_label(effect), " is not a parameter name")
+  }
+
+  if ("S" %in% to_get) {
+    stop("S is not supported for glmer models")
+  }
+
+  summary <- summary[summary$term == effect, ]
+
+  to_get %>%
+    lapply(function(t) get_term_from_broom(t, summary)) %>%
+    stats::setNames(to_get)
+}
+
 
 get_terms.lmerMod <- function(
   model,

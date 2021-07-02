@@ -9,7 +9,7 @@
 This package contains helper functions for formatting numbers.
 }
 \author{
-\strong{Maintainer}: TJ Mahr \email{tristan.mahr@gmail.com}
+\strong{Maintainer}: Tristan Mahr \email{tristan.mahr@wisc.edu} (\href{https://orcid.org/0000-0002-8890-5116}{ORCID})
 
 }
 \keyword{internal}
